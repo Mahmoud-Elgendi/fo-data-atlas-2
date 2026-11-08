@@ -1,31 +1,23 @@
-# GitHub download and offline updates
+# GitHub install and offline updates — 0.3.0
 
-Version 0.2.0 includes this feature. Repository: [Mahmoud-Elgendi/fo-data-atlas-2](https://github.com/Mahmoud-Elgendi/fo-data-atlas-2). The connected app returned 404 on 7 November; terminal authentication/publication and real private-release download remain separate live checks. Existing 0.1.1 ZIPs do not contain this helper. Python 3.10+ is required; GitHub CLI is needed only while checking/downloading releases. Querying installed evidence does not call GitHub.
+Repository: https://github.com/Mahmoud-Elgendi/fo-data-atlas-2. The 0.2.0 release remains immutable; version 0.3 separates small tools from Core/Full metadata and fixes long Windows download extraction paths.
 
-## User workflow
+## Install
 
-1. Install GitHub CLI and sign in with `gh auth login` using an account with repository read access. Credentials remain with GitHub CLI; the plugin does not request/save tokens. [GitHub authentication](https://cli.github.com/manual/gh_auth_login).
-2. Download `scripts/github_release.py` from the owner's repository, or use its copy in an existing plugin.
-3. Once a release is published, run `python github_release.py install`. Its default repository is Mahmoud-Elgendi/fo-data-atlas-2; `--repo OWNER/REPOSITORY` overrides it. It shows the latest stable package/size, asks `[Y/n]`, downloads/verifies the complete offline ZIP and starts the existing setup wizard. Choose the AI tool and global/project scope; complete the reported host activation steps.
-4. Use `$fo-atlas-query` offline. Once per conversation the skill checks for a newer release if configured, and asks: **A newer Atlas package is available. Update now?** Declining or an unavailable check continues locally. This is an agent skill instruction, not a native IDE startup hook or guaranteed background notification.
-5. Explicit update: ask `$fo-atlas-setup` to update or run `python PACK/scripts/github_release.py install`. A downloaded package remembers its repository in `release-origin.json`; the standalone bootstrap defaults to the owner's repository too. A configured alternative origin takes precedence over that default.
+Use Python 3.10+ and GitHub CLI authenticated for private-repository read access. Run `python scripts/github_release.py install` from the small source/bootstrap package. It verifies/downloads the tools ZIP and starts the branded AI-tool/global-project/profile wizard. Select Core (default) or Full offline, review size/settings and confirm [Y/n]. Metadata is separately verified and cached once per machine. Follow native host activation steps afterward.
 
-Commands: `check` discovers without downloading; `download` fetches without registration; `install` fetches then starts setup. `--tag v0.2.0` pins a stable package; `--destination <folder>` selects the cache. Existing same-version downloads are reverified against the selected release and full manifest before reuse, enabling setup retries without downloading again. Altered/unrelated folders are preserved and rejected. A verified download can later be installed offline through Setup.cmd. Installation copies into a temporary directory and promotes it only after verifying the copied database.
+The query skill checks once per conversation when invoked, offers a newer tools release, and continues locally if unavailable or declined. This is an agent instruction, not a native IDE startup hook. All installed metadata queries stay offline. Tool updates with unchanged metadata IDs/hashes reuse the cache; they do not download the baseline again.
 
-## Two version identities
+Commands: `check` only reads release metadata; `download` verifies/cache-downloads tools; `install` also starts setup. `--tag v0.3.0` pins a stable tools version. `--destination PATH` selects its download cache. Existing same-version downloads are reverified before reuse. Tool copies are staged/promoted atomically. Profile cache behavior and missing-evidence rules are in [metadata profiles](metadata-profiles.md).
 
-Plugin version (for example 0.2.0) identifies skills, scripts and the complete reference payload. F&O version (10.0.49 or 10.0.50) identifies a separately verified metadata baseline. New metadata requires a new package version too; do not replace a released asset under the same identity.
+## Versions and preservation
 
-Retain project schema exports, rules, queries and selected source IDs. After updating, compare configured source IDs with those available; resolve missing/mismatched snapshots before source-dependent query generation. Never silently switch a project from 10.0.49 to 10.0.50. Projects may still use retained older packs.
+The tools version and F&O metadata baseline are separate. metadata-catalog.json pins each Core/Full asset to its release tag and size/hash. Existing cache entries, project schemas/rules/queries and selected source IDs remain in place. Never silently switch a project's application baseline. An explicit project reference_pack override continues to take precedence.
 
 ## Owner release contract
 
-- Store small scripts/skills/docs in Git and publish the complete offline ZIP as a manually uploaded Release asset. The automatically generated GitHub source ZIP is not the offline pack. [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases).
-- Use stable tags `vMAJOR.MINOR.PATCH` and asset `fo-data-atlas-MAJOR.MINOR.PATCH.zip`, generated by `tools/package_atlas_plugin.py`. Bump both host manifests first. Preserve prior snapshots/releases.
-- Required ZIP content: one fo-data-atlas root, both host manifests, skills/scripts, references/atlas.sqlite, references/manifest.json and package-manifest.json. All hashes/sizes must match. The downloader requires the SHA256 digest returned by GitHub's release API. [Asset digests](https://github.blog/changelog/2025-06-03-releases-now-expose-digests-for-release-assets/).
-- First implementation: one ZIP smaller than 2 GiB, expanded content up to 16 GiB. If a later pack exceeds this, implement/test split assets before publishing. Downloads are complete packages, not binary patches. Allow disk for the archive, expanded package, installed copy and previous versions.
-- Publish the small bootstrap helper alongside the package or keep it in the repository. Source edits do not upload anything. Keep the repository private as previously requested; review source redistribution permissions before adding other readers.
+Publish stable vMAJOR.MINOR.PATCH tags and a small `fo-data-atlas-MAJOR.MINOR.PATCH.zip` tools asset, its checksum and the bootstrap helper. For a new metadata baseline also attach the exact Core/Full ZIPs named in metadata-catalog.json. Subsequent tools-only releases reuse the same metadata catalog/release assets. Keep the repository private as agreed.
 
-## Integrity and limits
+Metadata assets contain only references/atlas.sqlite and references/manifest.json. Verify ZIP size/SHA256 and database hash before cache promotion. Tools ZIPs contain a metadata catalog and package-manifest.json covering their files; original 0.2 complete archives remain readable by the helper for compatibility. A release must not be reported published while it is a draft or local artifact.
 
-Before promotion the helper verifies the outer ZIP digest/size, safe paths, duplicate names, every manifest file hash, host identities and the offline reference database hash. The existing installer retains previous package files and project settings. Native host loading, source-version correctness, source joins and business totals require their own validation.
+GitHub CLI is required only for online acquisition. A matching local metadata pack can seed cache with --local-pack. Native host loading, real private transfer and business/runtime correctness are separately recorded checks. See [GitHub login](https://cli.github.com/manual/gh_auth_login) and [release assets](https://docs.github.com/en/rest/releases/assets).

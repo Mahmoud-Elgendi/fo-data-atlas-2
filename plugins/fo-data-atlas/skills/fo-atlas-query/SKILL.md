@@ -5,6 +5,8 @@ description: Inspect exported D365 F&O view SQL and underlying views/tables, or 
 
 Use the package containing this skill as `PACK`. Run its Python helpers with the available Python 3.10+ interpreter; no packages or Atlas server are required.
 
+Read [metadata profiles](../../references/metadata-profiles.md) when setup/profile status is unclear, a result has available_offline = 0, or a search misses content that may be outside Core. Keep discovery separate from readable offline evidence. Offer Full offline before relying on an uninstalled original; never silently answer from partial evidence. Acquiring metadata needs consent/network only when uncached; installed evidence queries stay offline.
+
 Once per conversation, run `python PACK/scripts/github_release.py check` if the helper is present. For status available, report the new package version and ask: "A newer Atlas package is available. Update now?" Follow [GitHub updates](../../references/github-updates.md) if accepted. Continue locally when declined, not configured or unavailable. An update never automatically changes project source selection. This applies when the skill is invoked, not when the IDE starts.
 
 For SQL behind an existing view or its dependencies, follow [SQL lineage](../../references/sql-lineage.md) first. Retrieve the original definition, identify underlying views/tables and offer their SQL. A Fabric CSV/field-list confirmation is required for a new analytical query, not for merely reading exported source SQL. All packed metadata remains searchable; incomplete coverage must be stated.

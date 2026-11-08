@@ -4,3 +4,4 @@
 *.zip
 **/dist/
 test-evidence/
+**/reference-pack*.json

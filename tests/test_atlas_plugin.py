@@ -225,7 +225,7 @@ class AtlasPluginTests(unittest.TestCase):
     def test_setup_cancel_does_not_copy_or_register(self):
         project = self.root / "not-created"
         with redirect_stdout(io.StringIO()) as output, patch("builtins.input", side_effect=["3", "1", str(project), "n"]), patch.object(atlas_install, "prepare") as prepare:
-            self.assertEqual(atlas_install.main([]), 0)
+            self.assertEqual(atlas_install.main(['--metadata-profile','core']), 0)
         prepare.assert_not_called()
         self.assertFalse(project.exists())
         self.assertIn("Mahmoud Elgendi", output.getvalue())
@@ -233,11 +233,11 @@ class AtlasPluginTests(unittest.TestCase):
     def test_setup_accepts_preview_and_keeps_scripted_json_mode(self):
         result = {"package": str(self.root / "package"), "next_steps": ["Activate the plugin."]}
         project = self.root / "project"
-        with redirect_stdout(io.StringIO()), patch("builtins.input", side_effect=["3", "1", str(project), ""]), patch.object(atlas_install, "prepare", return_value=dict(result)) as prepare:
-            self.assertEqual(atlas_install.main([]), 0)
+        with redirect_stdout(io.StringIO()), patch("builtins.input", side_effect=["3", "1", str(project), ""]), patch('metadata_cache.acquire',return_value=self.root/'fixture-metadata'), patch.object(atlas_install, "prepare", return_value=dict(result)) as prepare:
+            self.assertEqual(atlas_install.main(['--metadata-profile','core']), 0)
         self.assertEqual(prepare.call_args.args[1:], (project.resolve(), "both"))
         self.assertTrue(prepare.call_args.kwargs["allow_upgrade"])
-        with redirect_stdout(io.StringIO()) as output, patch("builtins.input", side_effect=AssertionError("Non-interactive setup prompted")), patch.object(atlas_install, "prepare", return_value=dict(result)):
+        with redirect_stdout(io.StringIO()) as output, patch("builtins.input", side_effect=AssertionError("Non-interactive setup prompted")), patch('metadata_cache.acquire',return_value=self.root/'fixture-metadata'), patch.object(atlas_install, "prepare", return_value=dict(result)):
             self.assertEqual(atlas_install.main(["--host", "codex", "--scope", "project", "--project", str(project)]), 0)
         self.assertEqual(json.loads(output.getvalue())["scope"], "project")
 
@@ -269,6 +269,20 @@ class AtlasPluginTests(unittest.TestCase):
                 atlas_install.prepare(pack, base, 'codex')
         self.assertFalse((base / '.agents/plugins/marketplace.json').exists())
         self.assertFalse(list(base.rglob('atlas.sqlite')))
+
+    def test_temporary_directory_lock_does_not_publish_partial_copy(self):
+        staged=self.root/'staged';staged.mkdir();(staged/'complete.txt').write_text('complete')
+        target=self.root/'target'
+        original=Path.rename;calls=[]
+        def locked_once(path,destination):
+            calls.append(path)
+            if len(calls)==1: raise PermissionError('temporary cloud scan lock')
+            return original(path,destination)
+        with patch.object(Path,'rename',new=locked_once),patch.object(atlas_install.time,'sleep'):
+            atlas_install.promote(staged,target)
+        self.assertEqual((target/'complete.txt').read_text(),'complete')
+        self.assertFalse(staged.exists())
+        self.assertEqual(len(calls),2)
 
     def test_long_project_path_install(self):
         import shutil, os, stat

@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "metadata_id": "snapshot-8a63169e90b0c2f7",
+  "repository": "Mahmoud-Elgendi/fo-data-atlas-2",
+  "release_tag": "v0.3.0",
+  "profiles": {
+    "core": {
+      "asset": "fo-atlas-metadata-snapshot-8a63169e90b0c2f7-core-4fafc6b3859f.zip",
+      "sha256": "34f30d94df208bb14594d812c975e895d5d969e9fa2593607bf6d00a8cd527f2",
+      "bytes": 318513889,
+      "sqlite_sha256": "4fafc6b3859f88e0cc892026007bb157462c4cbf8512ab6597fd89a5dcb21ebc",
+      "database_bytes": 611340288,
+      "documents": 447389,
+      "payload_documents": 204438,
+      "unique_contents": 182328,
+      "sources": 11
+    },
+    "full": {
+      "asset": "fo-atlas-metadata-snapshot-8a63169e90b0c2f7-full-8a63169e90b0.zip",
+      "sha256": "22c422612da673557d0756754f3cea1bdff1850e42c0ae10396e872c03b426bb",
+      "bytes": 1301733130,
+      "sqlite_sha256": "8a63169e90b0c2f76a95f08bcb726efbc1cfa8fbd48bf83cf6eba24e15c6ea18",
+      "database_bytes": 1742393344,
+      "documents": 447389,
+      "unique_contents": 395819,
+      "sources": 11,
+      "payload_documents": 447389
+    }
+  }
+}

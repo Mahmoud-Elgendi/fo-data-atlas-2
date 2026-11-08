@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
 import shutil
@@ -22,7 +23,17 @@ DEFAULT_REPOSITORY = "Mahmoud-Elgendi/fo-data-atlas-2"
 VERSION = re.compile(r"v?(\d+\.\d+\.\d+)\Z")
 
 
+def disk(path):
+    # Bootstrap is standalone, so it cannot import the installed package's helper.
+    path = Path(path).resolve()
+    if os.name == 'nt' and not str(path).startswith('\\\\?\\'):
+        value = str(path)
+        return Path('\\\\?\\UNC\\'+value[2:]) if value.startswith('\\\\') else Path('\\\\?\\'+value)
+    return path
+
+
 def read_json(path, default=None):
+    path = disk(path)
     return json.loads(path.read_text(encoding="utf-8-sig")) if path.is_file() else default
 
 
@@ -40,10 +51,21 @@ def version_tuple(value):
     return tuple(map(int, match[1].split(".")))
 
 
-def gh(arguments, timeout=30):
+def find_gh():
     executable = shutil.which("gh")
+    if not executable and os.name=='nt':
+        for base in (os.environ.get('ProgramFiles',r'C:\Program Files'),os.environ.get('LOCALAPPDATA','')):
+            if not base: continue
+            for relative in ('GitHub CLI/gh.exe','Programs/GitHub CLI/gh.exe'):
+                candidate=Path(base)/relative
+                if candidate.is_file(): return str(candidate)
+    return executable
+
+
+def gh(arguments, timeout=30):
+    executable = find_gh()
     if not executable:
-        raise OSError("GitHub CLI is not installed. Local/offline queries remain available.")
+        raise OSError("GitHub CLI was not found on PATH or in standard installation folders. Local/offline queries remain available.")
     result = subprocess.run([executable, *arguments], capture_output=True, text=True,
                             timeout=timeout, check=False)
     if result.returncode:
@@ -91,7 +113,7 @@ def check(repo, current="0.0.0", tag=None):
 
 def sha(path):
     digest = hashlib.sha256()
-    with path.open("rb") as handle:
+    with disk(path).open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
@@ -110,7 +132,8 @@ def safe_relative(value):
 
 def extract_verified(archive, destination, expected_version):
     """Validate the full immutable package before the caller promotes its directory."""
-    with zipfile.ZipFile(archive) as bundle:
+    destination = disk(destination)
+    with zipfile.ZipFile(disk(archive)) as bundle:
         seen, entries, total = set(), [], 0
         for entry in bundle.infolist():
             relative = safe_relative(entry.filename.rstrip("/"))
@@ -137,6 +160,7 @@ def extract_verified(archive, destination, expected_version):
 
 
 def verify_pack(pack, expected_version, origin=None):
+    pack = disk(pack)
     if origin is not None and read_json(pack / 'release-origin.json', {}) != origin:
         raise ValueError('Cached download origin does not match the selected release.')
     manifest = read_json(pack / "package-manifest.json", {})
@@ -162,10 +186,15 @@ def verify_pack(pack, expected_version, origin=None):
         identity = read_json(pack / host / "plugin.json", {})
         if identity.get("name") != "fo-data-atlas" or identity.get("version") != expected_version:
             raise ValueError("Host plugin identity mismatch.")
-    reference = read_json(pack / "references" / "manifest.json", {})
-    db = pack / "references" / "atlas.sqlite"
-    if not db.is_file() or sha(db) != reference.get("sqlite_sha256"):
-        raise ValueError("Offline reference publication hash mismatch.")
+    if manifest.get('bundle_kind')=='tools':
+        catalog=read_json(pack/'metadata-catalog.json',{})
+        if catalog.get('format')!=1 or not {'core','full'}.issubset(catalog.get('profiles',{})):
+            raise ValueError('Tools package has no valid core/full metadata catalog.')
+    else:
+        reference = read_json(pack / "references" / "manifest.json", {})
+        db = pack / "references" / "atlas.sqlite"
+        if not db.is_file() or sha(db) != reference.get("sqlite_sha256"):
+            raise ValueError("Offline reference publication hash mismatch.")
     if not (pack / "scripts" / "install.py").is_file():
         raise ValueError("Release has no installer.")
     return pack
@@ -173,11 +202,12 @@ def verify_pack(pack, expected_version, origin=None):
 
 def download(info, destination):
     destination = Path(destination).resolve()
-    destination.mkdir(parents=True, exist_ok=True)
+    disk(destination).mkdir(parents=True, exist_ok=True)
     final = destination / ("fo-data-atlas-" + info["version"])
-    if final.exists():
-        return verify_pack(final, info['version'], origin=info)
-    with tempfile.TemporaryDirectory(prefix=".atlas-download-", dir=destination) as scratch:
+    if disk(final).exists():
+        verify_pack(final, info['version'], origin=info)
+        return final
+    with tempfile.TemporaryDirectory(prefix=".atlas-download-", dir=disk(destination)) as scratch:
         scratch = Path(scratch)
         gh(["release", "download", info["tag"], "--repo", "github.com/" + info["repository"],
             "--pattern", info["asset"], "--dir", str(scratch)], timeout=3600)
@@ -187,7 +217,7 @@ def download(info, destination):
         pack = extract_verified(archive, scratch / "expanded", info["version"])
         # The repository identity is already validated; no credential is persisted.
         (pack / "release-origin.json").write_text(json.dumps(info, indent=2) + "\n", encoding="utf-8")
-        pack.rename(final)
+        pack.rename(disk(final))
     return final
 
 
@@ -210,7 +240,8 @@ def main(argv=None):
         return 0
     try:
         info = release_info(repo, args.tag)
-        print(f"Download {info['version']} ({info['bytes'] / 1024**3:.2f} GiB) from {info['repository']}.")
+        size = f"{info['bytes']/1024**3:.2f} GiB" if info['bytes']>=1024**3 else f"{info['bytes']/1024**2:.2f} MiB"
+        print(f"Download {info['version']} ({size}) from {info['repository']}.")
         if input("Download this complete offline package? [Y/n]: ").strip().lower() not in {"", "y", "yes"}:
             print("Cancelled; current installation remains available.")
             return 0

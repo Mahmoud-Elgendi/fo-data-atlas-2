@@ -1,5 +1,13 @@
 # First-version verification — 4 November 2026
 
+## 0.3.0 profile/cache checks — 8 November 2026
+
+Core/Full metadata assets were derived from the unchanged original database. Core retains 447,389 discoverable identities and 204,438 readable document identities; Full retains all originals and its original whole-database hash. Actual Core reads resolve the English Purchase order label and the complete 50-object CustCustomerV3Entity SQL graph.
+
+Complete project regression: 186 tests PASS; focused Atlas suites: 56 PASS. Eight formatter checks passed. New tests cover absent Core payloads, all-object discovery, cache reuse without network across projects/tool upgrades, local seeding, explicit profile switching, corrupt cache/snapshot rejection, cancellation before download and a tools-only archive with no embedded evidence database. Long-path extraction regression remains included. Windows CLI discovery handles an installed GitHub CLI with an old IDE PATH; staged installation handles inherited readonly attributes and bounded retries for temporary directory locks.
+
+Real-sized Core ZIP extraction, shared-cache reuse across two isolated projects, installed offline SQL lookup, explicit missing payload and Full local seeding/profile switching passed. Final local artifact and live publication evidence are recorded in the external 0.3.0 release action log/delivery manifest. Native host loading and live private GitHub transfer are not inferred from fixtures or local installation. Earlier full-bundle statements below apply to their historical versions.
+
 ## 0.2.0 local release checks — 8 November 2026
 
 - Complete project regression: 174 Python tests PASS (test-evidence/release-0.2.0-full-tests.log); eight formatter checks PASS. The focused Atlas suites contain 44 passing tests.

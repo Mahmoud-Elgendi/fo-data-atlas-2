@@ -9,6 +9,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 import zipfile
+import os
+import shutil
+import stat
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("atlas_github_release", ROOT / "plugins/fo-data-atlas/scripts/github_release.py")
@@ -21,14 +24,21 @@ class GithubReleaseTests(unittest.TestCase):
         parent = ROOT / 'test-evidence' / 'atlas-github'
         parent.mkdir(parents=True, exist_ok=True)
         self.temp = tempfile.TemporaryDirectory(dir=parent)
-        self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
+        def cleanup():
+            def remove_readonly(function,path,exc_info):
+                os.chmod(path,stat.S_IWRITE);function(path)
+            native=release.disk(self.root)
+            if native.exists(): shutil.rmtree(native,onerror=remove_readonly)
+            self.temp.cleanup()
+        self.addCleanup(cleanup)
 
     def archive(self, name="fixture.zip", extra=None, corrupt=False):
         identity = json.dumps({"name": "fo-data-atlas", "version": "0.2.0"}).encode()
         db = b"small offline payload fixture"
         files = {".codex-plugin/plugin.json": identity, ".claude-plugin/plugin.json": identity,
                  "scripts/install.py": b"# installer fixture\n", "references/atlas.sqlite": db,
+                 "examples/view-sql-custcustomerv3entity/source-CUSTDEFAULTDELIVERYLOCATIONVIEW--5f4dd73d7263.sql": b'SELECT 1;',
                  "references/manifest.json": json.dumps({"sqlite_sha256": hashlib.sha256(db).hexdigest()}).encode()}
         manifest = {"name": "fo-data-atlas", "version": "0.2.0", "files": [
             {"path": path, "bytes": len(content), "sha256": hashlib.sha256(content).hexdigest()}
@@ -54,6 +64,12 @@ class GithubReleaseTests(unittest.TestCase):
         for value in ("--help", "owner/../repo", "https://evil.example/owner/repo", "owner/repo; echo token"):
             with self.assertRaises(ValueError):
                 release.repository(value)
+
+    @unittest.skipUnless(os.name=='nt','Windows CLI installation discovery')
+    def test_installed_cli_is_found_when_terminal_path_is_stale(self):
+        executable=self.root/'GitHub CLI/gh.exe';executable.parent.mkdir();executable.write_bytes(b'fixture - never executed')
+        with patch.object(release.shutil,'which',return_value=None),patch.dict(os.environ,{'ProgramFiles':str(self.root)}):
+            self.assertEqual(release.find_gh(),str(executable))
 
     def test_bootstrap_defaults_to_owner_repo_without_local_package(self):
         output = io.StringIO()
@@ -134,6 +150,23 @@ class GithubReleaseTests(unittest.TestCase):
             release.download(info, destination)
         self.assertFalse((destination / "fo-data-atlas-0.2.0").exists())
         self.assertEqual(list(destination.iterdir()), [])
+
+    def test_download_extracts_under_long_windows_cache_path(self):
+        archive = self.archive()
+        info = self.info(archive)
+        destination = self.root / ('deep-project-' + 'x'*32) / 'github-download-test'
+        def native(path):
+            return Path('\\\\?\\'+str(path.resolve())) if os.name=='nt' and not str(path).startswith('\\\\?\\') else path
+        def remove_readonly(function,path,exc_info):
+            os.chmod(path,stat.S_IWRITE); function(path)
+        self.addCleanup(lambda: shutil.rmtree(native(destination.parent),onerror=remove_readonly) if native(destination.parent).exists() else None)
+        def download(arguments,timeout):
+            path=Path(arguments[-1])/info['asset']
+            native(path).write_bytes(archive.read_bytes())
+        with patch.object(release,'gh',side_effect=download):
+            pack=release.download(info,destination)
+        self.assertTrue(native(pack/'references/atlas.sqlite').is_file())
+        self.assertEqual(release.verify_pack(pack,'0.2.0',origin=info).name,'fo-data-atlas-0.2.0')
 
     def test_inner_tampering_and_unlisted_files_rejected(self):
         for name, extra, corrupt in (("corrupt.zip", None, True), ("unlisted.zip", "fo-data-atlas/extra.py", False)):

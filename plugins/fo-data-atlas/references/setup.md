@@ -1,49 +1,31 @@
-# Setup and refresh
+# Setup — 0.3.0
 
-Use Python 3.10+ with its standard library. A portable distribution includes `references/atlas.sqlite`, `manifest.json`, `INDEX.md`, the skills and scripts. The source checkout also contains `tools/build_atlas_plugin.py` for rebuilding from local exports.
+## First installation
 
-## Install
+Use Python 3.10+ and GitHub CLI authenticated with read access to the private repository. Run the latest scripts/github_release.py install from the source/bootstrap package. It verifies the small tools ZIP and starts Setup.cmd/scripts/install.py. Version 0.2 bootstrap scripts expect a monolithic archive; use the new bootstrap for the one-time 0.3 migration.
 
-From your intended Fabric project, run `python <package>/scripts/install.py`, or specify `--project <project>`. It asks for Codex, Claude Code or both, then global or current-project scope. Supply `--host` / `--scope` for repeatable unattended setup after the user has chosen. Existing host files are merged without removing other plugins. The installer prepares local private marketplaces and reports the host steps still needed. Installation inside the source package is rejected to prevent recursive copies.
+The branded wizard by Mahmoud Elgendi asks for Codex, Claude Code or both, global/current-project scope, the project folder where needed, and Core (default) or Full offline metadata. It shows the profile size and confirms [Y/n]. Invalid choices retry; Enter accepts the labelled default; Q cancels. Cancellation before confirmation performs no metadata download. Native host activation steps follow preparation and must be checked in the host.
 
-Codex requires refreshing/restarting the app and selecting the plugin in its local Plugins Directory. Claude Code can register the local marketplace and install with its CLI; the installer prints the exact commands for the chosen scope. Host loading must be verified in the actual application. A package/schema test is not a host smoke test.
+Core contains selected original evidence and all-object discovery; Full includes every original document. Read [metadata profiles](metadata-profiles.md) before assuming an uninstalled original was searched. Verified metadata is cached once per machine and shared by tool versions/projects. Compatible tools-only updates reuse it. [GitHub workflow](github-updates.md) describes release checking and downloads.
 
-### Interactive setup
+## Offline/local installation
 
-`Setup.cmd` shows the F&O Data Atlas banner, creator Mahmoud Elgendi and a brief explanation. Numbered menus select Codex / Claude Code / both, then project-only / global scope. Invalid choices retry; Enter selects the labelled default. A project installation asks for its folder. A settings preview ends with `Continue with this setup? [Y/n]`; Enter accepts Yes, N cancels, and Q cancels at any prompt before installation. Progress and readable next steps follow. Double-click runs keep the window open for reading.
+An extracted tools ZIP can use a matching local metadata pack with scripts/install.py --local-pack PACK_ROOT --metadata-profile core (or full). The local pack root contains references/atlas.sqlite; its exact expected hash is checked. This can reuse the owner's built Core or an older complete 0.2 pack for Full, with no metadata network download. A previously cached profile also works offline. The small tools ZIP alone does not contain the evidence database.
 
-For unattended setup, pass `--host`, `--scope` and `--project` where applicable. Fully specified runs retain JSON output and no prompts. Add `--interactive` to show the preview/confirmation even when choices are supplied.
+The Windows Setup.cmd prefers the existing local Codex Python runtime, then the Python launcher, then Python from PATH. Existing Python 3.10+ and GitHub CLI are online prerequisites; no third-party Python packages are required. Global/project host settings are merged; unrelated entries and previous versions are retained. Managed upgrades require the wizard's confirmation or explicit --upgrade for unattended setup.
 
-### Update an earlier installation
+## Each Fabric project
 
-Version 0.1.1 keeps the same offline corpus. The interactive confirmation permits updating an earlier Atlas-managed Codex marketplace path to the new version; its old package directory is kept. Custom marketplace paths and newer-version registrations are not replaced. Unattended updates require `--upgrade` explicitly. Native host activation/refresh remains a separate step.
+1. Run templates/export-fabric-schema.sql manually in the intended Fabric SQL surface. Save its metadata result with column headings as CSV.
+2. Run scripts/atlas.py init-project --project PROJECT --schema CSV. Existing project configuration is preserved.
+3. Select matching metadata_sources from atlas.py sources in .fo-data-atlas/project.json. schema_file and relative reference_pack paths resolve from .fo-data-atlas. Never infer the user's application build from a source's nickname.
+4. Run atlas.py context --project PROJECT to validate schema fingerprint and source selection. Schema changes require explicit review/update of schema_sha256.
+5. Confirm dataset grain/fields and review the descriptively named SQL/mapping/check files. Run SQL/checks in Fabric separately. Exported view SQL inspection alone does not require a Fabric CSV.
 
-For Claude Code, the wizard prints its local marketplace commands. If the same private marketplace name is already registered at the old distribution path, remove that old registration before adding the new path. Setup does not execute those native host commands itself.
+An explicit project reference_pack overrides the installed shared-cache default and is never silently rewritten by setup. Native Codex/Claude loading and runtime/business validation are separate from package/cache checks.
 
-## Per project
+## Maintenance
 
-1. Run `templates/export-fabric-schema.sql` manually in the intended Fabric Warehouse. Save the metadata result with its column headings as CSV.
-2. Run `python scripts/atlas.py init-project --project <project> --schema <csv>`. It creates `.fo-data-atlas/project.json` and copies the validated CSV locally. Existing project config is not overwritten.
-3. Inspect `atlas.py sources` and select matching `metadata_sources` in project.json. Record environment-specific reporting requirements there. Keep source snapshots separate and make cross-snapshot assumptions explicit.
-   `schema_file` is resolved relative to the `.fo-data-atlas` configuration directory, not the project root.
-4. Request a dataset, confirm its grain/fields, then review the three descriptively named output files. Run dataset/check SQL yourself in Fabric.
+The existing lossless reference builder remains available as scripts/build_references.py, using explicit snapshot/folder/catalog/files source config and a fresh output. Original exports and prior snapshots are immutable. tools/build_atlas_metadata_packs.py builds Core/Full assets from a complete existing pack; tools/build_atlas_tools_release.py binds tools to their exact metadata catalog. A tools-only release should reuse the same catalog/assets.
 
-`atlas.py context --project <project>` verifies the schema fingerprint and selected source IDs before query work. If the schema CSV changes, review the change and explicitly update `schema_sha256`; it is never silently trusted as the previous schema.
-
-## Rebuild references
-
-In the source checkout, run `python tools/build_atlas_plugin.py --config <local-source-config.json> --output <new-pack>/references`. A config has `sources` entries with `type` (`snapshot`, `folder`, `catalog` or `files`), stable `id`, and local `path`. `snapshot` expects the existing manifest.csv/raw layout; `catalog` reads the existing Atlas SQL SQLite schema; `folder` preserves exported reference files; `files` takes an additional list of selected relative paths in `files`. The default configuration discovers the known local export roots.
-
-The same builder is bundled as `scripts/build_references.py`; recipients can use it with an explicit local config and a new output directory without the original source checkout.
-
-The builder checks original hashes for snapshot files, stores lossless compressed evidence, creates searchable references and writes ready-to-read Markdown for the six example tables. Every other document can be rendered as Markdown using `atlas.py show <id> --output <name>.md`. Restarting an interrupted build resumes its staging database with immutable source identities; changed inputs require a new output directory. Previously published reference databases are never overwritten.
-
-Keep the old pack while using the new snapshot. The tool does not connect to the VM or Fabric and does not modify imported source exports. Local source config paths are maintenance inputs; they are not the project schema and are not required on the recipient's machine.
-
-To use a newly built reference snapshot without reinstalling the skills, set project.json `reference_pack` to its pack root (the directory containing `references/atlas.sqlite`), select matching `metadata_sources`, and run `atlas.py context`. Relative reference-pack paths resolve from `.fo-data-atlas`; null uses the installed package. The skills use the validated effective pack path for evidence commands.
-
-Official host documentation checked 4 November 2026:
-
-- [Codex plugin packaging and local marketplaces](https://developers.openai.com/plugins/build/plugins)
-- [Claude Code manifest](https://code.claude.com/docs/en/plugins-reference)
-- [Claude Code installation scopes](https://code.claude.com/docs/en/discover-plugins)
+Source metadata, source-version evidence, destination schema, runtime behavior and reconciled financial results remain separate validation levels. DWH deployment is outside this plugin setup.

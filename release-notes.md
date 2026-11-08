@@ -1,13 +1,12 @@
-# F&O Data Atlas 0.2.0
+# F&O Data Atlas 0.3.0
 
-Prepared 8 November 2026. Publication and native host activation are reported separately; a local package is not a published GitHub release.
+Prepared 8 November 2026; publication/native activation are separate checks.
 
-- Keeps the complete existing offline metadata corpus: 447,389 documents, 11 source identities. The corpus hash and original definitions are unchanged; this is not a newly collected/verified .49 baseline.
-- Adds exported SQL view inspection: original SQL, nested underlying views/tables/functions, explicit gaps, and optional named dependency SQL files with provenance. Same-named objects in different snapshots are never merged.
-- Adds GitHub bootstrap/install/update and an update offer once per query-skill conversation. Unavailable checks continue locally; updates preserve source/project settings and previous files. Same-version cached downloads are verified before reuse.
-- Retains branded setup, Codex/Claude choices and global/project scope. Installation copies are promoted only after offline payload integrity succeeds.
-- Handles long Windows installation paths through extended-path copying/staging, with a regression fixture for deeply nested project paths.
-- Packages target-specific PO and receipt examples with SQL/mapping/checks, evidence and a sample schema. Vendor invoice remains a starter.
-- Fixes exact GlobalOptionsetMetadata casing support and allows explicit schema-validated project exceptions. Financial dimension and transaction/posted/current-rate amount rules are documented.
+- Separates the small tools package from independently versioned, shared metadata cache. Compatible tools-only updates do not redownload unchanged metadata.
+- Adds Core (default) and Full offline selection. Both retain 447,389 object identities; Core has 204,438 readable document identities and Full has all originals. Missing evidence is explicit.
+- Core includes both SQL catalogs, table/view/entity/EDT/enum XML and English labels. Full additionally supplies classes, forms, reports and all languages. Scope/source identities and original hashes are preserved.
+- Fixes extended Windows paths in the download/extraction/verification path, not just installation copy. Adds regression and cache/upgrade tests.
+- Keeps view SQL and dependency inspection, target-specific PO/receipt examples, exact schema naming and source/posted/current-rate distinctions. Vendor invoice remains a starter.
+- Metadata downloads: Core 303.8 MiB; Full 1.21 GiB. Tools ZIP size is given by its build. Cache entries are retained across profiles/projects; metadata activation is atomic and verified.
 
-Limitations: original source SQL is not certified Fabric SQL; runtime X++, dynamic SQL and extension merging may add unseen dependencies. Native host loading, live private GitHub transfer and business reconciliation require separately recorded evidence. Receipt native currency/amount population remains sample-accepted only. The downloader currently supports one full ZIP below 2 GiB, not split assets or binary patches.
+All evidence comes from the existing exports. No new .49 baseline or business/runtime reconciliation is claimed. Original source SQL is not automatically Fabric-ready; native host loading and live private release transfer require separate verification. Published 0.2.0 files remain unchanged.

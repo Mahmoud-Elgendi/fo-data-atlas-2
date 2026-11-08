@@ -3,6 +3,7 @@ import argparse
 from pathlib import Path
 import shutil
 import zipfile
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,6 +15,9 @@ def prepare(pack, output, project=ROOT):
     if output.exists():
         raise ValueError('Choose a new source output; earlier candidates are preserved.')
     output.mkdir(parents=True)
+    version=json.loads((pack/'.codex-plugin/plugin.json').read_text(encoding='utf-8'))['version']
+    documentation=project/('docs/plugin-release-'+version)
+    if not documentation.is_dir(): documentation=project/'docs/plugin-release-2026-11-08'
     for path in pack.rglob('*'):
         relative = path.relative_to(pack)
         if (not path.is_file() or any(p in {'dist','__pycache__','.git'} for p in relative.parts)
@@ -23,18 +27,18 @@ def prepare(pack, output, project=ROOT):
         target = output / 'plugins' / 'fo-data-atlas' / relative
         target.parent.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(path,target)
-    for name in ('build_atlas_plugin.py','package_atlas_plugin.py','prepare_atlas_release.py','verify_atlas_plugin.py'):
+    for name in ('build_atlas_plugin.py','package_atlas_plugin.py','prepare_atlas_release.py','verify_atlas_plugin.py','build_atlas_metadata_packs.py','build_atlas_tools_release.py'):
         target = output/'tools'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tools'/name,target)
-    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py'):
+    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py'):
         target=output/'tests'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tests'/name,target)
-    shutil.copytree(project/'docs/plugin-release-2026-11-08',output/'docs/release-0.2.0')
+    shutil.copytree(documentation,output/('docs/release-'+version))
     shutil.copyfile(pack/'RELEASE-NOTES.md',output/'release-notes.md')
-    (output/'.gitignore').write_text('**/__pycache__/\n*.pyc\n*.sqlite*\n*.zip\n**/dist/\ntest-evidence/\n',encoding='utf-8')
-    (output/'README.md').write_text('''# F&O Data Atlas
+    (output/'.gitignore').write_text('**/__pycache__/\n*.pyc\n*.sqlite*\n*.zip\n**/dist/\ntest-evidence/\n**/reference-pack*.json\n',encoding='utf-8')
+    text='''# F&O Data Atlas
 
 Private offline D365 F&O metadata and SQL assistant by Mahmoud Elgendi.
 
@@ -49,8 +53,9 @@ Use Python 3.10+ and authenticated GitHub CLI with read access to this repositor
 python plugins/fo-data-atlas/scripts/github_release.py install
 ```
 
-It downloads/verifies all offline files and opens the AI-tool/global-or-project setup
-wizard. Follow its native host activation steps. Once installed, query evidence offline.
+It downloads/verifies the tools and selected Core/Full metadata, then opens the
+AI-tool/global-or-project setup wizard. Follow native host activation instructions.
+Installed evidence works offline; uncached originals require the Full profile.
 Use the same command to update; existing project settings and previous versions stay.
 
 See [plugin guide](plugins/fo-data-atlas/README.md),
@@ -67,7 +72,10 @@ python plugins/fo-data-atlas/scripts/validate_package.py --source-only
 The source checkout alone intentionally lacks references/atlas.sqlite; obtain the
 complete release package before attempting metadata queries or offline setup.
 Metadata baselines and plugin versions are separate. No new .49 collection is claimed.
-''',encoding='utf-8')
+'''
+    text=text.replace('release-0.2.0','release-'+version)
+    (output/'README.md').write_text(text,encoding='utf-8')
+    (output/'.gitattributes').write_text('* -text\n',encoding='ascii')
     files=[p for p in output.rglob('*') if p.is_file()]
     if any('.sqlite' in p.name or p.suffix=='.zip' for p in files):
         raise ValueError('Generated source contains a payload that belongs in a release asset.')

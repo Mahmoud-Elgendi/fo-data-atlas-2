@@ -10,6 +10,8 @@ import shutil
 import sys
 import tempfile
 import os
+import stat
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 NAME = "fo-data-atlas"
@@ -22,6 +24,20 @@ def disk(path):
         value = str(path)
         return Path('\\\\?\\UNC\\' + value[2:]) if value.startswith('\\\\') else Path('\\\\?\\' + value)
     return path
+
+
+def promote(staged,target):
+    staged,target=disk(staged),disk(target)
+    # A new local staging copy may inherit a cloud folder's readonly attribute.
+    if os.name=='nt': os.chmod(staged,stat.S_IWRITE)
+    for attempt in range(5):
+        if target.exists(): raise ValueError('Installation appeared during copy; existing files were preserved.')
+        try:
+            staged.rename(target)
+            return
+        except PermissionError:
+            if attempt==4: raise
+            time.sleep(0.1*(2**attempt))
 
 
 class Cancelled(Exception):
@@ -96,10 +112,15 @@ def write_json(path, value):
     path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
 
-def prepare(pack, base, host, allow_upgrade=False, notify=None):
+def prepare(pack, base, host, allow_upgrade=False, notify=None, metadata_pack=None):
     """Local, inspectable setup; never replace an existing installation or unrelated entry."""
     pack, base = Path(pack).resolve(), Path(base).resolve()
-    if not (pack / "references" / "atlas.sqlite").is_file():
+    modular = (pack/'metadata-catalog.json').is_file()
+    reference_pack = Path(metadata_pack).resolve() if metadata_pack else pack
+    if modular and metadata_pack is None:
+        from metadata_cache import resolve
+        reference_pack = resolve(pack)
+    if not disk(reference_pack / "references" / "atlas.sqlite").is_file():
         raise ValueError("Build/copy the complete offline reference pack before installation.")
     notify = notify or (lambda message: None)
     version = read_json(pack / ".codex-plugin" / "plugin.json", {})["version"]
@@ -124,18 +145,23 @@ def prepare(pack, base, host, allow_upgrade=False, notify=None):
             if not allow_upgrade or not managed or old.get("name") != NAME or not older_version or older_version >= tuple(map(int, version.split("."))):
                 raise ValueError("An Atlas marketplace entry points elsewhere; review it or use --upgrade for a managed earlier version.")
     notify("Verifying the offline reference checksum...")
-    reference = read_json(pack / "references" / "manifest.json", {})
+    reference = read_json(reference_pack / "references" / "manifest.json", {})
+    if modular:
+        catalog=read_json(pack/'metadata-catalog.json',{})
+        desc=catalog.get('profiles',{}).get(reference.get('profile'),{})
+        if reference.get('metadata_id')!=catalog.get('metadata_id') or reference.get('sqlite_sha256')!=desc.get('sqlite_sha256'):
+            raise ValueError('Selected metadata is incompatible with this tools catalog.')
     fingerprint = hashlib.sha256()
-    with (pack / "references" / "atlas.sqlite").open("rb") as handle:
+    with disk(reference_pack / "references" / "atlas.sqlite").open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""): fingerprint.update(chunk)
     if fingerprint.hexdigest() != reference.get("sqlite_sha256"):
         raise ValueError("Reference payload does not match its publication manifest; installation stopped.")
     if target.exists():
         notify("Checking the existing installation...")
         # An identical rerun is safe; do not silently keep an old/different reference snapshot.
-        original = read_json(pack / "references" / "manifest.json", {})
+        original = reference
         installed = read_json(target / "references" / "manifest.json", {})
-        if not original or original != installed:
+        if not modular and (not original or original != installed):
             raise ValueError("This version is already installed with different references; use a new version or destination.")
         # Compare scripts and skill/rule content as well as reference identity.
         for path in pack.rglob("*"):
@@ -145,18 +171,22 @@ def prepare(pack, base, host, allow_upgrade=False, notify=None):
                 if not destination.exists() or destination.read_bytes() != path.read_bytes():
                     raise ValueError("Installed package differs; preserve it and select a new package version.")
     else:
-        notify("Copying the package. The offline reference file is large; please wait...")
+        notify("Copying the small tools package; metadata stays in the shared cache." if modular else "Copying the package. The offline reference file is large; please wait...")
         disk(target.parent).mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix='.atlas-install-', dir=disk(target.parent)) as scratch:
             staged = Path(scratch) / NAME
             shutil.copytree(disk(pack), staged, ignore=shutil.ignore_patterns("__pycache__", "dist", "*.pyc", "*.build.sqlite*"))
-            copied = hashlib.sha256()
-            with (staged / 'references' / 'atlas.sqlite').open('rb') as handle:
-                for chunk in iter(lambda: handle.read(1024 * 1024), b''): copied.update(chunk)
-            if copied.hexdigest() != reference['sqlite_sha256']:
-                raise ValueError('Copied offline payload hash mismatch; registration was not changed.')
-            staged.rename(disk(target))
-    result = {"package": str(target), "completed": ["Self-contained package available and checked"], "next_steps": []}
+            if not modular:
+                copied = hashlib.sha256()
+                with (staged / 'references' / 'atlas.sqlite').open('rb') as handle:
+                    for chunk in iter(lambda: handle.read(1024 * 1024), b''): copied.update(chunk)
+                if copied.hexdigest() != reference['sqlite_sha256']:
+                    raise ValueError('Copied offline payload hash mismatch; registration was not changed.')
+            promote(staged,target)
+    if modular:
+        from metadata_cache import activate
+        activate(target,reference_pack)
+    result = {"package": str(target), "completed": ["Package and offline metadata available and checked"], "next_steps": []}
     if host in {"codex", "both"}:
         notify("Preparing the Codex private marketplace...")
         if existing:
@@ -182,6 +212,9 @@ def main(argv=None):
     parser.add_argument("--project", type=Path)
     parser.add_argument("--interactive", action="store_true", help="Show the setup wizard, preview and Y/n confirmation.")
     parser.add_argument("--upgrade", action="store_true", help="Allow updating an earlier Atlas-managed marketplace entry; keep its files.")
+    parser.add_argument('--metadata-profile',choices=('core','full'))
+    parser.add_argument('--cache-root',type=Path)
+    parser.add_argument('--local-pack',type=Path,help='Seed cache from a matching local metadata pack; no metadata download.')
     args = parser.parse_args(argv)
     interactive = args.interactive or not (args.host and args.scope)
     installation_started = False
@@ -194,9 +227,25 @@ def main(argv=None):
             if interactive: project = project_folder()
             else: project = Path.cwd()
         base = Path.home() if scope == "global" else project.resolve()
+        catalog=read_json(ROOT/'metadata-catalog.json',None)
+        profile=args.metadata_profile or 'core'
+        if catalog and interactive and not args.metadata_profile:
+            # Preserve an existing same-baseline profile when it is explicitly configured.
+            previous=read_json(ROOT/'reference-pack.json',{})
+            if not previous:
+                candidates=list((base/'.fo-data-atlas').glob('distribution-*'))
+                candidates=[p for p in candidates if re.fullmatch(r'distribution-\d+\.\d+\.\d+',p.name)]
+                for folder in sorted(candidates,key=lambda p:tuple(map(int,p.name.removeprefix('distribution-').split('.'))),reverse=True):
+                    choice=read_json(folder/'plugins'/NAME/'reference-pack.json',{})
+                    if choice.get('metadata_id')==catalog['metadata_id']:
+                        previous=choice;break
+            if previous.get('metadata_id')==catalog['metadata_id']: profile=previous.get('profile','core')
+            profile=choose('\n3. Offline metadata',(('core','Core - SQL, tables, enums and English labels'),('full','Full offline - all metadata, X++ and languages')),profile)
+        if catalog and interactive:
+            print(f"  Metadata: {profile}; download only if uncached: {catalog['profiles'][profile]['bytes']/1024**2:.1f} MiB.")
         if interactive:
             version = read_json(ROOT / ".codex-plugin" / "plugin.json", {})["version"]
-            print("\n3. Review your setup")
+            print("\n4. Review your setup" if catalog else "\n3. Review your setup")
             print("  Tool(s):  " + {"codex": "Codex", "claude": "Claude Code", "both": "Codex + Claude Code"}[host])
             print("  Scope:    " + ("Global" if scope == "global" else "Current project only"))
             print("  Folder:   " + str(base))
@@ -205,10 +254,14 @@ def main(argv=None):
             print("  Atlas-managed registration may be updated to this version.")
             print("  Host activation steps will be shown after setup.\n")
             if not confirm("Continue with this setup?"): raise Cancelled()
-            print("\n4. Prepare installation", flush=True)
+            print("\n5. Prepare installation" if catalog else "\n4. Prepare installation", flush=True)
         installation_started = True
-        result = prepare(ROOT, base, host, allow_upgrade=args.upgrade or interactive,
-                         notify=progress if interactive else None)
+        options={'allow_upgrade':args.upgrade or interactive,'notify':progress if interactive else None}
+        if catalog:
+            from metadata_cache import acquire
+            options['metadata_pack']=acquire(catalog,profile,args.cache_root,args.local_pack)
+        result = prepare(ROOT, base, host, **options)
+        if catalog: result['metadata_profile']=profile
         result["scope"] = scope
         if "claude_marketplace" in result:
             result["claude_commands"] = [

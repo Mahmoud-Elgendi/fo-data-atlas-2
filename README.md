@@ -13,13 +13,14 @@ Use Python 3.10+ and authenticated GitHub CLI with read access to this repositor
 python plugins/fo-data-atlas/scripts/github_release.py install
 ```
 
-It downloads/verifies all offline files and opens the AI-tool/global-or-project setup
-wizard. Follow its native host activation steps. Once installed, query evidence offline.
+It downloads/verifies the tools and selected Core/Full metadata, then opens the
+AI-tool/global-or-project setup wizard. Follow native host activation instructions.
+Installed evidence works offline; uncached originals require the Full profile.
 Use the same command to update; existing project settings and previous versions stay.
 
 See [plugin guide](plugins/fo-data-atlas/README.md),
-[release notes](release-notes.md), [release plan](docs/release-0.2.0/PLAN.md)
-and [terminal workflow](docs/release-0.2.0/TERMINAL.md).
+[release notes](release-notes.md), [release plan](docs/release-0.3.0/PLAN.md)
+and [terminal workflow](docs/release-0.3.0/TERMINAL.md).
 
 ## Test source
 

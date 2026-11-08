@@ -24,6 +24,9 @@ class ReferenceConnection(sqlite3.Connection):
 
 
 def connect(pack: Path):
+    if (Path(pack)/'reference-pack.json').is_file() or not (Path(pack)/'references/atlas.sqlite').is_file():
+        from metadata_cache import resolve
+        pack=resolve(pack)
     path = pack / "references" / "atlas.sqlite"
     if not path.is_file():
         raise ValueError("Offline reference pack is missing. Build or copy the full package first.")
@@ -50,7 +53,7 @@ def search(db, query, source=None, kind=None, limit=20):
         params.append(kind)
     params += [query, max(1, min(limit, 100))]
     rows = db.execute(
-        "SELECT d.id,d.source,d.path,d.kind,d.name,d.sha256 "
+        "SELECT d.id,d.source,d.path,d.kind,d.name,d.sha256,EXISTS(SELECT 1 FROM blobs b WHERE b.sha256=d.sha256) AS available_offline "
         "FROM search JOIN documents d ON d.rowid=search.rowid WHERE "
         + " AND ".join(where)
         + " ORDER BY CASE WHEN lower(d.name)=lower(?) THEN 0 ELSE 1 END,rank LIMIT ?",
@@ -64,6 +67,9 @@ def document(db, identity):
     if row is None:
         raise ValueError("Unknown evidence ID; search first.")
     blob = db.execute("SELECT content FROM blobs WHERE sha256=?", (row["sha256"],)).fetchone()
+    if blob is None:
+        raise ValueError('Evidence is discoverable but not installed offline: '+row['name']+
+                         '. Install the Full offline metadata profile to read this original document.')
     raw = zlib.decompress(blob[0])
     if hashlib.sha256(raw).hexdigest() != row["sha256"]:
         raise ValueError("Evidence hash mismatch: reference pack is damaged.")

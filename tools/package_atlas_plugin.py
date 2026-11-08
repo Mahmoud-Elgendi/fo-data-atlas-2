@@ -16,22 +16,27 @@ def sha(path):
     return value.hexdigest()
 
 
-def package(pack, output=None):
+def package(pack, output=None, tools=False):
     pack = pack.resolve()
-    reference = json.loads((pack / "references" / "manifest.json").read_text(encoding="utf-8"))
-    if sha(pack / "references" / "atlas.sqlite") != reference["sqlite_sha256"]:
-        raise ValueError("Reference database does not match its publication manifest.")
+    if tools:
+        if not (pack/'metadata-catalog.json').is_file(): raise ValueError('Tools package needs metadata-catalog.json.')
+    else:
+        reference = json.loads((pack / "references" / "manifest.json").read_text(encoding="utf-8"))
+        if sha(pack / "references" / "atlas.sqlite") != reference["sqlite_sha256"]:
+            raise ValueError("Reference database does not match its publication manifest.")
     version = json.loads((pack / ".codex-plugin" / "plugin.json").read_text())["version"]
     output = output or pack / "dist" / ("fo-data-atlas-" + version + ".zip")
     output.parent.mkdir(parents=True, exist_ok=True)
     if output.exists(): raise ValueError("Archive already exists; preserve it and choose a new output path.")
     files = sorted(p for p in pack.rglob("*") if p.is_file() and
                    "dist" not in p.relative_to(pack).parts and "__pycache__" not in p.parts and
-                   p.suffix != ".pyc" and ".build.sqlite" not in p.name and p.name != "package-manifest.json")
+                   p.suffix != ".pyc" and ".build.sqlite" not in p.name and p.name != "package-manifest.json"
+                   and (not tools or p.suffix!='.sqlite') and p.name!='reference-pack.json')
     manifest = {"name": "fo-data-atlas", "version": version, "private": True,
                 "host_load_verified": False, "runtime_validated": False, "business_reconciled": False,
                 "files": [{"path": p.relative_to(pack).as_posix(), "sha256": sha(p), "bytes": p.stat().st_size} for p in files]}
     identity = pack / "package-manifest.json"
+    manifest['bundle_kind']='tools' if tools else 'complete'
     identity.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     with zipfile.ZipFile(output, "x", allowZip64=True) as archive:
         for path in files + [identity]:
@@ -50,5 +55,6 @@ def package(pack, output=None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pack", type=Path, default=DEFAULT); parser.add_argument("--output", type=Path)
+    parser.add_argument('--tools',action='store_true')
     args = parser.parse_args()
-    package(args.pack, args.output)
+    package(args.pack, args.output,args.tools)

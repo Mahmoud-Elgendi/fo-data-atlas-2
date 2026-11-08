@@ -38,8 +38,14 @@ def validate(pack, source_only=False):
             if not path.is_relative_to(pack.resolve()) or not path.is_file():
                 issues.append("Broken/escaping link in " + str(md.relative_to(pack)) + ": " + target)
     if not source_only:
-        manifest = pack / "references" / "manifest.json"
-        db = pack / "references" / "atlas.sqlite"
+        reference_pack=pack
+        if (pack/'reference-pack.json').is_file() or (pack/'metadata-catalog.json').is_file():
+            try:
+                from metadata_cache import resolve
+                reference_pack=resolve(pack)
+            except ValueError as exc: issues.append(str(exc))
+        manifest = reference_pack / "references" / "manifest.json"
+        db = reference_pack / "references" / "atlas.sqlite"
         if not manifest.exists() or not db.exists(): issues.append("Offline payload is missing")
         else:
             digest = hashlib.sha256()
