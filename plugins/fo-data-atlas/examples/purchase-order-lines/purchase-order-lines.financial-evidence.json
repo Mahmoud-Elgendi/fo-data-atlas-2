@@ -1,0 +1,3771 @@
+{
+  "purpose": "Evidence and code excerpts for proposed dimension/currency enrichment; not runtime or target execution proof.",
+  "records": [
+    {
+      "source_id": "application-20261019",
+      "name": "PurchLine",
+      "kind": "AxTable",
+      "evidence_id": "5b19a3c097bfbf70ad4c525279a92546",
+      "relative_path": "raw/ApplicationSuite/Foundation/AxTable/PurchLine.xml",
+      "original_sha256": "fbf4c9ddc8b16c12e66f7df18401bafcbaa0e65a9f9fa926d64b84283ae81311",
+      "root_properties": {
+        "Name": "PurchLine",
+        "ConfigurationKey": "LogisticsBasic",
+        "DeveloperDocumentation": "@SYS124476",
+        "Label": "@SYS9664",
+        "SingularLabel": "@SYS22957",
+        "TableGroup": "WorksheetLine",
+        "TitleField1": "PurchId",
+        "TitleField2": "ItemId",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "Found",
+        "ClusteredIndex": "PurchLineIdx",
+        "CreatedDateTime": "Yes",
+        "DisableLockEscalation": "Yes",
+        "ModifiedDateTime": "Yes",
+        "Modules": "ProcurementAndSourcing",
+        "PrimaryIndex": "TransIdIdx",
+        "ReplacementKey": "TransIdIdx"
+      },
+      "methods": {},
+      "relations": [
+        "<AxTableRelation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AxTableRelationForeignKey\">\n\t\t\t<Name>DefaultDimension</Name>\n\t\t\t<Cardinality>ZeroMore</Cardinality>\n\t\t\t<RelatedTable>DimensionAttributeValueSet</RelatedTable>\n\t\t\t<RelatedTableCardinality>ZeroOne</RelatedTableCardinality>\n\t\t\t<RelatedTableRole>DimensionAttributeValueSet</RelatedTableRole>\n\t\t\t<RelationshipType>Association</RelationshipType>\n\t\t\t<Role>DimensionAttributeValueSet_PurchLine</Role>\n\t\t\t<UseDefaultRoleNames>No</UseDefaultRoleNames>\n\t\t\t<Constraints>\n\t\t\t\t<AxTableRelationConstraint xsi:type=\"AxTableRelationConstraintField\">\n\t\t\t\t\t<Name>DefaultDimension</Name>\n\t\t\t\t\t<Field>DefaultDimension</Field>\n\t\t\t\t\t<RelatedField>RecId</RelatedField>\n\t\t\t\t</AxTableRelationConstraint>\n\t\t\t</Constraints>\n\t\t\t<Index>RecId</Index>\n\t\t</AxTableRelation>\n\t\t"
+      ],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "DimensionAttributeValueSet",
+      "kind": "AxTable",
+      "evidence_id": "1e4340fc4d139504bc2574ed6e71ff3e",
+      "relative_path": "raw/Dimensions/Dimensions/AxTable/DimensionAttributeValueSet.xml",
+      "original_sha256": "01eaae6cc68fe76b5a34f9574c95332a650f9d6723f2724b223e0c019fce237d",
+      "root_properties": {
+        "Name": "DimensionAttributeValueSet",
+        "ConfigurationKey": "LedgerBasic",
+        "DeveloperDocumentation": "@SYS330801",
+        "Label": "@SYS133476",
+        "TableGroup": "Main",
+        "TitleField1": "RecId",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "Found",
+        "CreatedBy": "Yes",
+        "CreatedDateTime": "Yes",
+        "DisableLockEscalation": "Yes",
+        "ModifiedBy": "Yes",
+        "ModifiedDateTime": "Yes",
+        "Modules": "FinancialDimensions",
+        "SaveDataPerCompany": "No"
+      },
+      "methods": {},
+      "relations": [],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "ExchangeRateCurrencyPair",
+      "kind": "AxTable",
+      "evidence_id": "791b1b868b25022899efedd87a29e7f6",
+      "relative_path": "raw/Currency/Currency/AxTable/ExchangeRateCurrencyPair.xml",
+      "original_sha256": "93782517f741e62342e6aae2c79eff347b3f8d50f8e2b78b5b587371754eb839",
+      "root_properties": {
+        "Name": "ExchangeRateCurrencyPair",
+        "DeveloperDocumentation": "@SYS312343",
+        "FormRef": "ExchangeRate",
+        "Label": "@SYS312341",
+        "TableGroup": "Group",
+        "TitleField1": "FromCurrencyCode",
+        "TitleField2": "ToCurrencyCode",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "FoundAndEmpty",
+        "ClusteredIndex": "CurrencyPairIdx",
+        "ModifiedDateTime": "Yes",
+        "Modules": "Currency",
+        "ReplacementKey": "CurrencyPairIdx",
+        "SaveDataPerCompany": "No"
+      },
+      "methods": {
+        "getExchangeRateDisplayFactor": "\n        /// <summary>\n    ///     Gets the exchange rate display factor for the provided exchange rate currency pair.\n    /// </summary>\n    /// <param name=\"_fromCurrencyCode\">\n    ///     The from currency code.\n    /// </param>\n    /// <param name=\"_toCurrencyCode\">\n    ///     The to currency code.\n    /// </param>\n    /// <param name=\"_exchangeRateType\">\n    ///     The ID of the exchange rate type.\n    /// </param>\n    /// <param name=\"_getReciprocalIfPrimaryNotFound\">\n    ///     Determines if the reciprocal exchange rate display factor should be retrieved when the primary exchange\n    ///     rate display factor is not found.\n    /// </param>\n    /// <returns>\n    ///     The exchange rate display factor for the provided exchange rate currency pair.\n    /// </returns>\n    /// <remarks>\n    ///     It is best to use the <c>ExchangeRateHelper</c> class to retrieve exchange rate information since\n    ///     this method only deals with variable exchange rates and does not take Euro triangulation into account.\n    /// </remarks>\n    public static ExchangeRateDisplayFactor getExchangeRateDisplayFactor(\n        CurrencyCode _fromCurrencyCode,\n        CurrencyCode _toCurrencyCode,\n        ExchangeRateTypeRecId _exchangeRateType,\n        boolean _getReciprocalIfPrimaryNotFound)\n    {\n        ExchangeRateCurrencyPair exchangeRateCurrencyPair;\n        ExchangeRateDisplayFactor exchangeRateDisplayFactor;\n\n        select firstonly ExchangeRateDisplayFactor\n            from exchangeRateCurrencyPair\n            where exchangeRateCurrencyPair.FromCurrencyCode == _fromCurrencyCode\n                && exchangeRateCurrencyPair.ToCurrencyCode == _toCurrencyCode\n                && exchangeRateCurrencyPair.ExchangeRateType ==_exchangeRateType;\n\n        exchangeRateDisplayFactor = exchangeRateCurrencyPair.ExchangeRateDisplayFactor;\n\n        if (!exchangeRateDisplayFactor && _getReciprocalIfPrimaryNotFound)\n        {\n            select firstonly ExchangeRateDisplayFactor\n                from exchangeRateCurrencyPair\n                where exchangeRateCurrencyPair.FromCurrencyCode == _toCurrencyCode\n                    && exchangeRateCurrencyPair.ToCurrencyCode == _fromCurrencyCode\n                    && exchangeRateCurrencyPair.ExchangeRateType ==_exchangeRateType;\n\n            exchangeRateDisplayFactor = exchangeRateCurrencyPair.ExchangeRateDisplayFactor;\n        }\n\n        return exchangeRateDisplayFactor;\n    }\n\n"
+      },
+      "relations": [
+        "<AxTableRelation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AxTableRelationForeignKey\">\n\t\t\t<Name>ExchangeRateType</Name>\n\t\t\t<Cardinality>ZeroMore</Cardinality>\n\t\t\t<OnDelete>Restricted</OnDelete>\n\t\t\t<RelatedTable>ExchangeRateType</RelatedTable>\n\t\t\t<RelatedTableCardinality>ExactlyOne</RelatedTableCardinality>\n\t\t\t<RelatedTableRole>ExchangeRateType</RelatedTableRole>\n\t\t\t<RelationshipType>Association</RelationshipType>\n\t\t\t<Role>ExchangeRateType_ExchangeRateCurrencyPair</Role>\n\t\t\t<UseDefaultRoleNames>No</UseDefaultRoleNames>\n\t\t\t<Constraints>\n\t\t\t\t<AxTableRelationConstraint xsi:type=\"AxTableRelationConstraintField\">\n\t\t\t\t\t<Name>ExchangeRateType</Name>\n\t\t\t\t\t<Field>ExchangeRateType</Field>\n\t\t\t\t\t<RelatedField>RecId</RelatedField>\n\t\t\t\t</AxTableRelationConstraint>\n\t\t\t</Constraints>\n\t\t\t<Index>RecId</Index>\n\t\t</AxTableRelation>\n\t\t"
+      ],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "ExchangeRate",
+      "kind": "AxTable",
+      "evidence_id": "2b3fa55082cd150d6ffaa585b476b6aa",
+      "relative_path": "raw/Currency/Currency/AxTable/ExchangeRate.xml",
+      "original_sha256": "48edb6eedb6ff8d98ad23a9837bf12ccbae587e38076b2486e0f99456ff2d949",
+      "root_properties": {
+        "Name": "ExchangeRate",
+        "DeveloperDocumentation": "@SYS312335",
+        "FormRef": "ExchangeRate",
+        "Label": "@SYS4955",
+        "TableGroup": "Reference",
+        "TitleField1": "ExchangeRateCurrencyPair",
+        "TitleField2": "ValidFrom",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "Found",
+        "ClusteredIndex": "ExchangeRateCurrencyPairIdx",
+        "CreatedBy": "Yes",
+        "CreatedDateTime": "Yes",
+        "ModifiedBy": "Yes",
+        "ModifiedDateTime": "Yes",
+        "Modules": "Currency",
+        "ReplacementKey": "ExchangeRateCurrencyPairIdx",
+        "SaveDataPerCompany": "No",
+        "ValidTimeStateFieldType": "Date"
+      },
+      "methods": {
+        "calculateValidToDate": "\n    private date calculateValidToDate()\n    {\n        ExchangeRate exchangeRate;\n        validFromDate calculatedToDate = dateMax();\n        date validFromDate = this.ValidFrom;\n        date validToDate = dateMax();\n\n        select firstonly validtimestate(validFromDate, validToDate) ValidFrom from exchangeRate\n            where exchangeRate.ExchangeRateCurrencyPair == this.ExchangeRateCurrencyPair\n                && exchangeRate.ValidFrom > this.ValidFrom;\n\n        if (exchangeRate != null)\n        {\n            calculatedToDate = exchangeRate.ValidFrom - 1;\n        }\n\n        return calculatedToDate;\n    }\n\n",
+        "findByDate": "\n    /// <summary>\n    ///    Finds the specified record in the <c>ExchangeRate</c> table.\n    /// </summary>\n    /// <param name=\"_exchangeRatePair\">\n    ///    The ID of the <c>ExchangeRateCurrencyPair</c> record for which to find the rate.\n    /// </param>\n    /// <param name=\"_validFromDate\">\n    ///    The date used to find the exchange rate record.\n    /// </param>\n    /// <param name=\"_forUpdate\">\n    ///    The update state of the record retrieved.\n    /// </param>\n    /// <returns>\n    ///    The specified record in the <c>ExchangeRate</c> table.\n    /// </returns>\n    public static ExchangeRate findByDate(RefRecId _exchangeRatePair, date _validFromDate, boolean _forUpdate = false)\n    {\n        ExchangeRate exchangeRate;\n        date validFromDate = _validFromDate;\n\n        exchangeRate.selectForUpdate(_forUpdate);\n\n        select validtimestate(validFromDate) exchangeRate\n            where exchangeRate.ExchangeRateCurrencyPair == _exchangeRatePair;\n\n        return exchangeRate;\n    }\n\n"
+      },
+      "relations": [
+        "<AxTableRelation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AxTableRelationForeignKey\">\n\t\t\t<Name>ExchangeRateCurrencyPair</Name>\n\t\t\t<Cardinality>ZeroMore</Cardinality>\n\t\t\t<RelatedTable>ExchangeRateCurrencyPair</RelatedTable>\n\t\t\t<RelatedTableCardinality>ZeroOne</RelatedTableCardinality>\n\t\t\t<RelatedTableRole>ExchangeRateCurrencyPair</RelatedTableRole>\n\t\t\t<RelationshipType>Association</RelationshipType>\n\t\t\t<Role>ExchangeRateCurrencyPair_ExchangeRate</Role>\n\t\t\t<UseDefaultRoleNames>No</UseDefaultRoleNames>\n\t\t\t<Constraints>\n\t\t\t\t<AxTableRelationConstraint xsi:type=\"AxTableRelationConstraintField\">\n\t\t\t\t\t<Name>ExchangeRateCurrencyPair</Name>\n\t\t\t\t\t<Field>ExchangeRateCurrencyPair</Field>\n\t\t\t\t\t<RelatedField>RecId</RelatedField>\n\t\t\t\t</AxTableRelationConstraint>\n\t\t\t</Constraints>\n\t\t\t<Index>RecId</Index>\n\t\t</AxTableRelation>\n\t"
+      ],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "ExchangeRateType",
+      "kind": "AxTable",
+      "evidence_id": "e027a16df5114c7274387e83d5f6c5b6",
+      "relative_path": "raw/Currency/Currency/AxTable/ExchangeRateType.xml",
+      "original_sha256": "3b365ac63d5499d2a47fdfa60392af87b17f53ecae2d1f4d8a3d5e54398774c0",
+      "root_properties": {
+        "Name": "ExchangeRateType",
+        "DeveloperDocumentation": "@SYS312340",
+        "FormRef": "ExchangeRateType",
+        "Label": "@SYS312339",
+        "TableGroup": "Group",
+        "TitleField1": "Name",
+        "TitleField2": "Description",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "EntireTable",
+        "ClusteredIndex": "NameIdx",
+        "Modules": "Currency",
+        "ReplacementKey": "NameIdx",
+        "SaveDataPerCompany": "No"
+      },
+      "methods": {},
+      "relations": [],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "ExchangeRateDisplayFactor",
+      "kind": "AxEnum",
+      "evidence_id": "2eddf43f22db8d5ee19e42771718fe98",
+      "relative_path": "raw/Currency/Currency/AxEnum/ExchangeRateDisplayFactor.xml",
+      "original_sha256": "62337b2892913b054424bc1a3fcf4d50acdd4596c982147c02bfaba2f8bb785c",
+      "root_properties": {
+        "Name": "ExchangeRateDisplayFactor",
+        "Label": "@CurrencyExchange:ConversionFactor"
+      },
+      "methods": {},
+      "relations": [],
+      "enum_values": [
+        {
+          "Name": "One",
+          "Label": "1",
+          "Value": "1"
+        },
+        {
+          "Name": "Ten",
+          "Label": "10",
+          "Value": "2"
+        },
+        {
+          "Name": "Hundred",
+          "Label": "100",
+          "Value": "3"
+        },
+        {
+          "Name": "Thousand",
+          "Label": "1000",
+          "Value": "4"
+        },
+        {
+          "Name": "TenThousand",
+          "Label": "10000",
+          "Value": "5"
+        }
+      ]
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "CurrencyEuroDenomination",
+      "kind": "AxTable",
+      "evidence_id": "1dfeea59db4ee9e7139ee01887aead8a",
+      "relative_path": "raw/Currency/Currency/AxTable/CurrencyEuroDenomination.xml",
+      "original_sha256": "44f48b8c2c64ab8e19a8421dadfb65005c82f889b9aaef23e44d713988d7f586",
+      "root_properties": {
+        "Name": "CurrencyEuroDenomination",
+        "DeveloperDocumentation": "@SYS312403",
+        "FormRef": "CurrencyEuroDenomination",
+        "Label": "@SYS312402",
+        "TableGroup": "Group",
+        "TitleField1": "CurrencyCode",
+        "TitleField2": "StartDate",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "FoundAndEmpty",
+        "ClusteredIndex": "CurrencyIdx",
+        "Modules": "Currency",
+        "ReplacementKey": "CurrencyIdx",
+        "SaveDataPerCompany": "No"
+      },
+      "methods": {
+        "displayStoredExchangeRate_Static": "\n    /// <summary>\n    /// Retrieves an exchange rate that can be displayed to the user.\n    /// </summary>\n    /// <param name=\"_storedExchangeRate\">\n    /// An exchange rate that is stored in the database.\n    /// </param>\n    /// <param name=\"_exchangeRateDisplayFactor\">\n    /// The exchange rate display factor to apply.\n    /// </param>\n    /// <returns>\n    /// An exchange rate that can be displayed to the user.\n    /// </returns>\n    /// <remarks>\n    /// After users enter exchange rates, they are multiplied by 100 and divided by the exchange rate\n    /// display factor specified on the <c>ExchangeRateCurrencyPair</c> table, before they are finally\n    /// stored in the database. This method applies the necessary factor to rates that have been stored in\n    /// this manner, so that they can be correctly displayed to the user after they are retrieved from the\n    /// database. It can be called before it displays any exchange rate on a form.\n    /// </remarks>\n    public static CurrencyExchangeRate displayStoredExchangeRate_Static(CurrencyExchangeRate _storedExchangeRate, ExchangeRateDisplayFactor _exchangeRateDisplayFactor)\n    {\n        return (_storedExchangeRate / 100) * CurrencyEuroDenomination::getNumericDisplayFactor(_exchangeRateDisplayFactor);\n    }\n\n",
+        "prepareExchangeRateForStorage_Static": "\n    /// <summary>\n    /// Retrieves an exchange rate that can be stored in the database.\n    /// </summary>\n    /// <param name=\"_displayedExchangeRate\">\n    /// An exchange rate that has been entered by the user on a form.\n    /// </param>\n    /// <param name=\"_exchangeRateDisplayFactor\">\n    /// The exchange rate display factor to apply.\n    /// </param>\n    /// <returns>\n    /// An exchange rate that can be stored in the database.\n    /// </returns>\n    /// <remarks>\n    /// After users enter exchange rates, they are multiplied by 100, and divided by the exchange rate\n    /// display factor that is specified on the <c>ExchangeRateCurrencyPair</c> table, before they are\n    /// finally stored in the database. This method applies that logic, and has to be called, before\n    /// storing any exchange rate entered by a user.\n    /// </remarks>\n    public static CurrencyExchangeRate prepareExchangeRateForStorage_Static(CurrencyExchangeRate _displayedExchangeRate, ExchangeRateDisplayFactor _exchangeRateDisplayFactor)\n    {\n        return (_displayedExchangeRate * 100) / CurrencyEuroDenomination::getNumericDisplayFactor(_exchangeRateDisplayFactor);\n    }\n\n",
+        "getNumericDisplayFactor": "\n    private static int getNumericDisplayFactor(ExchangeRateDisplayFactor _exchangeRateDisplayFactor)\n    {\n        int numericDisplayFactor;\n\n        switch (_exchangeRateDisplayFactor)\n        {\n            case ExchangeRateDisplayFactor::One:\n                numericDisplayFactor = 1;\n                break;\n\n            case ExchangeRateDisplayFactor::Ten:\n                numericDisplayFactor = 10;\n                break;\n\n            case ExchangeRateDisplayFactor::Hundred:\n                numericDisplayFactor = 100;\n                break;\n\n            case ExchangeRateDisplayFactor::Thousand:\n                numericDisplayFactor = 1000;\n                break;\n\n            case ExchangeRateDisplayFactor::TenThousand:\n                numericDisplayFactor = 10000;\n                break;\n\n            default:\n                numericDisplayFactor = 1;\n                break;\n        }\n\n        return numericDisplayFactor;\n    }\n\n"
+      },
+      "relations": [],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "ExchangeRateCalculation",
+      "kind": "AxClass",
+      "evidence_id": "6dc33ac600d97582e92a1611e43f4da3",
+      "relative_path": "raw/Currency/Currency/AxClass/ExchangeRateCalculation.xml",
+      "original_sha256": "e265e08bdba8fe7db2eee745e800fb75f2caca634271722c52571f4ad2f57bd9",
+      "root_properties": {
+        "Name": "ExchangeRateCalculation"
+      },
+      "methods": {
+        "calculateReciprocalExchangeRate": "\n    /// <summary>\n    /// Calculates the reciprocal exchange rate of a stored exchange rate.\n    /// </summary>\n    /// <param name=\"_exchangeRate\">\n    /// The exchange rate.\n    /// </param>\n    /// <returns>\n    /// The reciprocal exchange rate of a stored exchange rate.\n    /// </returns>\n    /// <remarks>\n    /// The exchange rate that is passed to this method should be in the same form as an exchange rate that\n    /// is stored in the database. The exchange rate that is returned will be in the same form and could be\n    /// stored in the database.\n    /// </remarks>\n    public static CurrencyExchangeRate calculateReciprocalExchangeRate(CurrencyExchangeRate _exchangeRate)\n    {\n        CurrencyExchangeRate reciprocalExchangeRate = 0;\n\n        if (_exchangeRate)\n        {\n            // The stored rate must first be divided by 100 to get it into the actual rate before\n            // finding the reciprocal. It must be multiplied by 100 to match a rate that would\n            // be stored in the database since the rates that are retrieved are always divided\n            // by 100 before use.  The math below could be simplified, but was left to be more\n            // descriptive about the actual calculation.\n\n            reciprocalExchangeRate = 100 * (1 / (_exchangeRate / 100));\n        }\n\n        return reciprocalExchangeRate;\n    }\n\n",
+        "getVariableExchangeRate": "\n    /// <summary>\n    /// Gets the variable exchange rate for the specified exchange rate currency pair.\n    /// </summary>\n    /// <param name=\"_fromCurrencyCode\">\n    /// The from currency code.\n    /// </param>\n    /// <param name=\"_toCurrencyCode\">\n    /// The to currency code.\n    /// </param>\n    /// <param name=\"_exchangeRateType\">\n    /// The ID of the exchange rate type.\n    /// </param>\n    /// <param name=\"_transactionDate\">\n    /// The transaction date.\n    /// </param>\n    /// <param name=\"_getReciprocalIfPrimaryNotFound\">\n    /// Determines whether to retrieve the reciprocal exchange rate when the primary exchange rate is not\n    /// found.\n    /// </param>\n    /// <returns>\n    /// The variable exchange rate for the specified exchange rate currency pair.\n    /// </returns>\n    /// <remarks>\n    /// It is best to use the <c>ExchangeRateCalculation</c> class to retrieve exchange rate information since\n    /// this method only deals with variable exchange rates and does not take Euro triangulation into\n    /// account.\n    /// </remarks>\n    public static CurrencyExchangeRate getVariableExchangeRate(\n        CurrencyCode _fromCurrencyCode,\n        CurrencyCode _toCurrencyCode,\n        ExchangeRateTypeRecId _exchangeRateType,\n        date _transactionDate,\n        boolean _getReciprocalIfPrimaryNotFound)\n    {\n        ExchangeRateCurrencyPair exchangeRateCurrencyPair;\n        ExchangeRate exchangeRate;\n        CurrencyExchangeRate variableExchangeRate;\n\n        // This call could be included as one SQL statement with a join on the ExchangeRate table,\n        // but was broken out for performance reasons. Since the ExchangeRateCurrencyPair table uses\n        // a FoundAndEmpty cache, this allows us to skip the SQL call entirely for cases where a\n        // reciprocal rate is often used.  We never really know how often a reciprocal rate will be\n        // required since it is based on the users data.\n        select firstonly RecId\n            from exchangeRateCurrencyPair\n            where exchangeRateCurrencyPair.FromCurrencyCode == _fromCurrencyCode\n                && exchangeRateCurrencyPair.ToCurrencyCode == _toCurrencyCode\n                && exchangeRateCurrencyPair.ExchangeRateType ==_exchangeRateType;\n\n        if (exchangeRateCurrencyPair)\n        {\n            select firstonly validtimestate(_transactionDate) ExchangeRate\n                from exchangeRate\n                where exchangeRate.ExchangeRateCurrencyPair == exchangeRateCurrencyPair.RecId;\n\n            variableExchangeRate = exchangeRate.ExchangeRate;\n        }\n\n        if (_getReciprocalIfPrimaryNotFound && !variableExchangeRate)\n        {\n            select firstonly RecId\n                from exchangeRateCurrencyPair\n                where exchangeRateCurrencyPair.FromCurrencyCode == _toCurrencyCode\n                    && exchangeRateCurrencyPair.ToCurrencyCode == _fromCurrencyCode\n                    && exchangeRateCurrencyPair.ExchangeRateType ==_exchangeRateType;\n\n            if (exchangeRateCurrencyPair)\n            {\n                select firstonly validtimestate(_transactionDate) ExchangeRate\n                    from exchangeRate\n                    where exchangeRate.ExchangeRateCurrencyPair == exchangeRateCurrencyPair.RecId;\n            }\n\n            if (exchangeRate.ExchangeRate)\n            {\n                // Since the caller asked for the rate in terms of From > To, it must be the reciprocal\n                // in order to be accurate.\n                variableExchangeRate = ExchangeRateCalculation::calculateReciprocalExchangeRate(exchangeRate.ExchangeRate);\n            }\n        }\n\n        return variableExchangeRate;\n    }\n\n"
+      },
+      "relations": [],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "CurrencyExchangeHelper",
+      "kind": "AxClass",
+      "evidence_id": "b071ecdfccc5dc7d9ee46057b60f49c3",
+      "relative_path": "raw/Ledger/Ledger/AxClass/CurrencyExchangeHelper.xml",
+      "original_sha256": "80735599880349127ad77c6069400be85c04ad5949f37cbc276cc50ac22de33b",
+      "root_properties": {
+        "Name": "CurrencyExchangeHelper"
+      },
+      "methods": {
+        "calculateTransactionToAccounting": "\n    /// <summary>\n    ///    Calculates the accounting currency amount from the specified transaction currency amount.\n    /// </summary>\n    /// <param name=\"_transactionCurrency\">\n    ///    The transaction currency originating the conversion.\n    /// </param>\n    /// <param name=\"_transactionCurrencyAmount\">\n    ///    The transaction currency amount that is used to calculate the accounting currency amount.\n    /// </param>\n    /// <param name=\"_roundResult\">\n    ///    A Boolean value that determines whether the result should be rounded.\n    /// </param>\n    /// <returns>\n    ///    An accounting currency amount that has been calculated from the transaction currency amount\n    ///    with the appropriate rounding applied.\n    /// </returns>\n    public AmountMST calculateTransactionToAccounting(CurrencyCode _transactionCurrency, AmountCur _transactionCurrencyAmount, boolean _roundResult)\n    {\n        this.validateLedger();\n\n        // Set the active exchange rate type to 1, which was set to the transaction to accounting exchange rate type\n        this.parmActiveExchangeRateType(ActiveExchangeRateType::ExchangeRateType1);\n\n        return this.calculate(\n            _transactionCurrency,\n            cachedAccountingCurrency,\n            _transactionCurrencyAmount,\n            _roundResult,\n            false);\n    }\n\n",
+        "calculateTransactionToAccountingAmounts": "\n    /// <summary>\n    ///    Calculates the accounting currency amount from the specified transaction currency amount.\n    /// </summary>\n    /// <param name=\"_transactionCurrency\">\n    ///    The transaction currency originating the conversion.\n    /// </param>\n    /// <param name=\"_transactionCurrencyAmount\">\n    ///    The transaction currency amount that is used to calculate the accounting currency amount.\n    /// </param>\n    /// <returns>\n    ///    A complex type containing the unrounded and rounded accounting currency amount that has been\n    ///    calculated from the transaction currency amount.\n    /// </returns>\n    public CurrencyCalculationResults calculateTransactionToAccountingAmounts(CurrencyCode _transactionCurrency, AmountCur _transactionCurrencyAmount)\n    {\n        Amount unroundedAmount = this.calculateTransactionToAccounting(_transactionCurrency, _transactionCurrencyAmount, false);\n\n        CurrencyCalculationResults amounts;\n\n        // if the amount returned was 0 then no rounding necessary so do an early exit for performance\n        if (unroundedAmount == 0)\n        {\n            amounts = CurrencyCalculationResults::construct(unroundedAmount, unroundedAmount);\n        }\n        else\n        {\n            amounts = CurrencyCalculationResults::construct(unroundedAmount,\n                this.roundWithRuleTypeCurrencyTableInstance(cachedAccountingCurrency, unroundedAmount));\n        }\n\n        return amounts;\n    }\n\n"
+      },
+      "relations": [],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "Ledger",
+      "kind": "AxTable",
+      "evidence_id": "84d525aa79d60ff15152c07cc4effb1e",
+      "relative_path": "raw/Ledger/Ledger/AxTable/Ledger.xml",
+      "original_sha256": "d6f49d2c1288ad0f9d639fcd26547c00711066be04e6a037d080efec02fc7266",
+      "root_properties": {
+        "Name": "Ledger",
+        "DeveloperDocumentation": "@sys317020",
+        "FormRef": "Ledger",
+        "Label": "@SYS13356",
+        "TableGroup": "Main",
+        "TitleField1": "Name",
+        "TitleField2": "Description",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "Found",
+        "CreatedBy": "Yes",
+        "CreatedDateTime": "Yes",
+        "ModifiedBy": "Yes",
+        "ModifiedDateTime": "Yes",
+        "Modules": "Ledger",
+        "ReplacementKey": "Name",
+        "SaveDataPerCompany": "No"
+      },
+      "methods": {
+        "findByLegalEntity": "\n    /// <summary>\n    /// Get the primary <c>Ledger</c> record for a legal entity.\n    /// </summary>\n    /// <param name=\"_legalEntityRecId\">\n    /// The record ID of a legal entity.\n    /// </param>\n    /// <param name=\"_forUpdate\">\n    /// A Boolean value that indicates whether to read the record for update; optional.\n    /// </param>\n    /// <param name=\"_concurrencyModel\">\n    /// The concurrency model option to use when the record is read; optional.\n    /// </param>\n    /// <returns>\n    /// The <c>Ledger</c> record.\n    /// </returns>\n    public static Ledger findByLegalEntity(\n        LegalEntity _legalEntityRecId,\n        boolean _forUpdate = false,\n        ConcurrencyModel _concurrencyModel = ConcurrencyModel::Auto)\n    {\n        Ledger ledger;\n\n        ledger.selectForUpdate(_forUpdate);\n\n        if (_forUpdate  && _concurrencyModel != ConcurrencyModel::Auto)\n        {\n            ledger.concurrencyModel(_concurrencyModel);\n        }\n\n        select firstonly ledger\n            where ledger.PrimaryForLegalEntity == _legalEntityRecId;\n\n        return ledger;\n    }\n\n"
+      },
+      "relations": [
+        "<AxTableRelation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AxTableRelationForeignKey\">\n\t\t\t<Name>BudgetExchangeRateType</Name>\n\t\t\t<Cardinality>ZeroMore</Cardinality>\n\t\t\t<OnDelete>Restricted</OnDelete>\n\t\t\t<RelatedTable>ExchangeRateType</RelatedTable>\n\t\t\t<RelatedTableCardinality>ZeroOne</RelatedTableCardinality>\n\t\t\t<RelatedTableRole>DefaultBudgetExchangeRateType</RelatedTableRole>\n\t\t\t<RelationshipType>Association</RelationshipType>\n\t\t\t<Role>BudgetExchangeRateType_Ledger</Role>\n\t\t\t<UseDefaultRoleNames>No</UseDefaultRoleNames>\n\t\t\t<Constraints>\n\t\t\t\t<AxTableRelationConstraint xsi:type=\"AxTableRelationConstraintField\">\n\t\t\t\t\t<Name>BudgetExchangeRateType</Name>\n\t\t\t\t\t<Field>BudgetExchangeRateType</Field>\n\t\t\t\t\t<RelatedField>RecId</RelatedField>\n\t\t\t\t</AxTableRelationConstraint>\n\t\t\t</Constraints>\n\t\t\t<Index>RecId</Index>\n\t\t</AxTableRelation>\n\t\t",
+        "<AxTableRelation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AxTableRelationForeignKey\">\n\t\t\t<Name>DefaultExchangeRateType</Name>\n\t\t\t<Cardinality>ZeroMore</Cardinality>\n\t\t\t<OnDelete>Restricted</OnDelete>\n\t\t\t<RelatedTable>ExchangeRateType</RelatedTable>\n\t\t\t<RelatedTableCardinality>ZeroOne</RelatedTableCardinality>\n\t\t\t<RelatedTableRole>ExchangeRateType</RelatedTableRole>\n\t\t\t<RelationshipType>Association</RelationshipType>\n\t\t\t<Role>ExchangeRateType_Ledger</Role>\n\t\t\t<UseDefaultRoleNames>No</UseDefaultRoleNames>\n\t\t\t<Constraints>\n\t\t\t\t<AxTableRelationConstraint xsi:type=\"AxTableRelationConstraintField\">\n\t\t\t\t\t<Name>DefaultExchangeRateType</Name>\n\t\t\t\t\t<Field>DefaultExchangeRateType</Field>\n\t\t\t\t\t<RelatedField>RecId</RelatedField>\n\t\t\t\t</AxTableRelationConstraint>\n\t\t\t</Constraints>\n\t\t\t<Index>RecId</Index>\n\t\t</AxTableRelation>\n\t\t",
+        "<AxTableRelation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AxTableRelationForeignKey\">\n\t\t\t<Name>PrimaryForLegalEntity</Name>\n\t\t\t<Cardinality>ZeroOne</Cardinality>\n\t\t\t<OnDelete>Cascade</OnDelete>\n\t\t\t<RelatedTable>CompanyInfo</RelatedTable>\n\t\t\t<RelatedTableCardinality>ExactlyOne</RelatedTableCardinality>\n\t\t\t<RelatedTableRole>CompanyInfo</RelatedTableRole>\n\t\t\t<RelationshipType>Association</RelationshipType>\n\t\t\t<Role>CompanyInfo_Ledger</Role>\n\t\t\t<UseDefaultRoleNames>No</UseDefaultRoleNames>\n\t\t\t<Constraints>\n\t\t\t\t<AxTableRelationConstraint xsi:type=\"AxTableRelationConstraintField\">\n\t\t\t\t\t<Name>PrimaryForLegalEntity</Name>\n\t\t\t\t\t<Field>PrimaryForLegalEntity</Field>\n\t\t\t\t\t<RelatedField>RecId</RelatedField>\n\t\t\t\t</AxTableRelationConstraint>\n\t\t\t</Constraints>\n\t\t\t<Index>RecId</Index>\n\t\t</AxTableRelation>\n\t\t",
+        "<AxTableRelation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AxTableRelationForeignKey\">\n\t\t\t<Name>ReportingCurrencyExchangeRateType</Name>\n\t\t\t<Cardinality>ZeroMore</Cardinality>\n\t\t\t<OnDelete>Restricted</OnDelete>\n\t\t\t<RelatedTable>ExchangeRateType</RelatedTable>\n\t\t\t<RelatedTableCardinality>ZeroOne</RelatedTableCardinality>\n\t\t\t<RelatedTableRole>ReportingCurrencyExchangeRateType</RelatedTableRole>\n\t\t\t<RelationshipType>Association</RelationshipType>\n\t\t\t<Role>ExchangeRateType_ReportingCurrency</Role>\n\t\t\t<UseDefaultRoleNames>No</UseDefaultRoleNames>\n\t\t\t<Constraints>\n\t\t\t\t<AxTableRelationConstraint xsi:type=\"AxTableRelationConstraintField\">\n\t\t\t\t\t<Name>ReportingCurrencyExchangeRateType</Name>\n\t\t\t\t\t<Field>ReportingCurrencyExchangeRateType</Field>\n\t\t\t\t\t<RelatedField>RecId</RelatedField>\n\t\t\t\t</AxTableRelationConstraint>\n\t\t\t</Constraints>\n\t\t\t<Index>RecId</Index>\n\t\t</AxTableRelation>\n\t"
+      ],
+      "enum_values": []
+    },
+    {
+      "source_id": "application-20261019",
+      "name": "CompanyInfo",
+      "kind": "AxTable",
+      "evidence_id": "8925d859068fdf331a7bb863c1ae43a7",
+      "relative_path": "raw/Directory/Directory/AxTable/CompanyInfo.xml",
+      "original_sha256": "166f6e85a9ee04345096c37cb3a061631f4d07c0947eff331b3f486a47bbb48d",
+      "root_properties": {
+        "Name": "CompanyInfo",
+        "DeveloperDocumentation": "@SYS125041",
+        "FormRef": "OMLegalEntities",
+        "Label": "@SYS129100",
+        "SingularLabel": "Legal entity",
+        "TableGroup": "Main",
+        "TitleField1": "DataArea",
+        "AllowRowVersionChangeTracking": "Yes",
+        "CacheLookup": "Found",
+        "ClusteredIndex": "Key",
+        "Extends": "OMInternalOrganization",
+        "Modules": "Ledger",
+        "PrimaryIndex": "RecId",
+        "ReplacementKey": "Key",
+        "SaveDataPerCompany": "No",
+        "SupportInheritance": "Yes",
+        "TableContents": "DefaultData"
+      },
+      "methods": {
+        "findDataArea": "\n    /// <summary>\n    ///    Finds the specified record in the <c>CompanyInfo</c> table.\n    /// </summary>\n    /// <param name=\"_dataArea\">\n    /// The data area Id' of the record to find.\n    /// </param>\n    /// <param name=\"_forUpdate\">\n    /// A <c>boolean</c> value that indicates if the record should be selected for update; optional.\n    /// </param>\n    /// <returns>\n    ///    A record in <c>CompanyInfo</c>; otherwise, an empty record.\n    /// </returns>\n    public static CompanyInfo findDataArea(\n        SelectableDataArea\n        _dataArea, boolean _forUpdate = false)\n    {\n        CompanyInfo companyInfo;\n\n        if (_forUpdate)\n        {\n            companyInfo.selectForUpdate(_forUpdate);\n        }\n\n        if (_dataArea)\n        {\n            select firstonly companyInfo where companyInfo.DataArea == _dataArea;\n        }\n\n        return companyInfo;\n    }\n\n"
+      },
+      "relations": [],
+      "enum_values": []
+    },
+    {
+      "source_id": "sql-application-catalog-20261023",
+      "evidence_id": "3e1d303848b67c744f83ec68888306d3",
+      "packed_sha256": "52e939345cd66d6607f47324f1c84066fe07d6116ae6afdf7ce1564f4c9aa2d6",
+      "captured_object": {
+        "object": {
+          "id": "live49:1816391398",
+          "database_name": "db_d365opsuae_dxperts_ax_20240803_02262986_0bbb",
+          "object_id": 1816391398,
+          "schema_name": "dbo",
+          "name": "EXCHANGERATEVIEW",
+          "display_name": "ExchangeRateView",
+          "kind": "VIEW",
+          "definition": "CREATE VIEW [DBO].[EXCHANGERATEVIEW] AS SELECT T1.FROMCURRENCYCODE AS FROMCURRENCYCODE, T1.TOCURRENCYCODE AS TOCURRENCYCODE, T1.EXCHANGERATETYPE AS EXCHANGERATETYPE, T1.PARTITION AS PARTITION, T1.RECID AS RECID, T2.EXCHANGERATE AS EXCHANGERATE, T2.VALIDFROM AS VALIDFROM, T2.VALIDTO AS VALIDTO, T2.PARTITION AS PARTITION#2, T3.PARTITION AS PARTITION#3 FROM EXCHANGERATECURRENCYPAIR T1 CROSS JOIN EXCHANGERATE T2 CROSS JOIN EXCHANGERATETYPE T3 WHERE((( T1.RECID  =  T2.EXCHANGERATECURRENCYPAIR)  AND ( T1.PARTITION  =  T2.PARTITION))  AND (( T1.EXCHANGERATETYPE  =  T3.RECID)  AND ( T1.PARTITION  =  T3.PARTITION)))",
+          "is_encrypted": 0,
+          "source_file": "definitions.jsonl",
+          "source_hash": "2a716d78288734f3519a23b54bf01f9fd01fd59cd9ed0603c1ef1b2c808af592"
+        },
+        "columns": [
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 1,
+            "name": "FROMCURRENCYCODE",
+            "data_type": "nvarchar",
+            "max_length": "6",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 2,
+            "name": "TOCURRENCYCODE",
+            "data_type": "nvarchar",
+            "max_length": "6",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 3,
+            "name": "EXCHANGERATETYPE",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 4,
+            "name": "PARTITION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 5,
+            "name": "RECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 6,
+            "name": "EXCHANGERATE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "16",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 7,
+            "name": "VALIDFROM",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 8,
+            "name": "VALIDTO",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 9,
+            "name": "PARTITION#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1816391398",
+            "column_id": 10,
+            "name": "PARTITION#3",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          }
+        ],
+        "dependencies": [
+          {
+            "id": 24305,
+            "source_key": "live49:1816391398",
+            "target_key": "live49:1836637686",
+            "referenced_schema": null,
+            "referenced_name": "EXCHANGERATE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 24306,
+            "source_key": "live49:1816391398",
+            "target_key": "live49:526729029",
+            "referenced_schema": null,
+            "referenced_name": "EXCHANGERATECURRENCYPAIR",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 24307,
+            "source_key": "live49:1816391398",
+            "target_key": "live49:1178695497",
+            "referenced_schema": null,
+            "referenced_name": "EXCHANGERATETYPE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          }
+        ],
+        "indexes": []
+      }
+    },
+    {
+      "source_id": "sql-application-catalog-20261023",
+      "evidence_id": "81c716ba6c841db781518a27296fd67a",
+      "packed_sha256": "ffc8f4ca13326fee4434d168482b365e5ce05a8621542500cf4d7abcbbc0d4cb",
+      "captured_object": {
+        "object": {
+          "id": "live49:683731511",
+          "database_name": "db_d365opsuae_dxperts_ax_20240803_02262986_0bbb",
+          "object_id": 683731511,
+          "schema_name": "dbo",
+          "name": "PURCHPURCHASEORDERLINEV2ENTITY",
+          "display_name": "PurchPurchaseOrderLineV2Entity",
+          "kind": "VIEW",
+          "definition": "CREATE VIEW [DBO].[PURCHPURCHASEORDERLINEV2ENTITY] AS SELECT T1.PURCHSTATUS AS PURCHASEORDERLINESTATUS, T1.TAXITEMGROUP AS SALESTAXITEMGROUPCODE, T1.TAXGROUP AS SALESTAXGROUPCODE, T1.ACCOUNTINGDISTRIBUTIONTEMPLATE AS ACCOUNTINGDISTRIBUTIONTEMPLATE, T1.ASSETBOOKID AS FIXEDASSETVALUEMODELID, T1.ASSETGROUP AS FIXEDASSETGROUPID, T1.ASSETID AS FIXEDASSETNUMBER, T1.ASSETTRANSTYPEPURCH AS FIXEDASSETTRANSACTIONTYPE, T1.BARCODE AS BARCODE, T1.BARCODETYPE AS BARCODESETUPID, T1.BLOCKED AS ISLINESTOPPED, T1.COMPLETE AS ISPARTIALDELIVERYPREVENTED, T1.CONFIRMEDDLV AS CONFIRMEDDELIVERYDATE, T1.CREATEFIXEDASSET AS ISNEWFIXEDASSET, T1.CUSTOMERREF AS CUSTOMERREFERENCE, T1.CUSTPURCHASEORDERFORMNUM AS CUSTOMERREQUISITIONNUMBER, T1.DEFAULTDIMENSION AS DEFAULTLEDGERDIMENSION, T1.DELIVERYDATE AS REQUESTEDDELIVERYDATE, T1.DELIVERYNAME AS DELIVERYADDRESSNAME, T1.EXTERNALITEMID AS EXTERNALITEMNUMBER, T1.GSTHSTTAXTYPE_CA AS GSTHSTTAXTYPE, T1.ITEMBOMID AS BOMID, T1.ITEMID AS ITEMNUMBER, T1.ITEMROUTEID AS ROUTEID, T1.LEDGERDIMENSION AS MAINACCOUNTID, T1.LINEAMOUNT AS LINEAMOUNT, T1.LINEDISC AS LINEDISCOUNTAMOUNT, T1.LINENUMBER AS LINENUMBER, T1.LINEPERCENT AS LINEDISCOUNTPERCENTAGE, T1.MATCHINGPOLICY AS VENDORINVOICEMATCHINGPOLICY, T1.MULTILNDISC AS MULTILINEDISCOUNTAMOUNT, T1.MULTILNPERCENT AS MULTILINEDISCOUNTPERCENTAGE, T1.NAME AS LINEDESCRIPTION, T1.OPERATIONTYPE_MX AS DIOTOPERATIONTYPE, T1.OVERDELIVERYPCT AS ALLOWEDOVERDELIVERYPERCENTAGE, T1.PDSCWQTY AS ORDEREDCATCHWEIGHTQUANTITY, T1.PRICEUNIT AS PURCHASEPRICEQUANTITY, T1.PROCUREMENTCATEGORY AS PROCUREMENTPRODUCTCATEGORYRECID, T1.PURCHID AS PURCHASEORDERNUMBER, T1.PURCHMARKUP AS FIXEDPRICECHARGES, T1.PURCHPRICE AS PURCHASEPRICE, T1.PURCHQTY AS ORDEREDPURCHASEQUANTITY, T1.PURCHUNIT AS PURCHASEUNITSYMBOL, T1.SHIPPINGDATECONFIRMED AS CONFIRMEDSHIPPINGDATE, T1.SHIPPINGDATEREQUESTED AS REQUESTEDSHIPPINGDATE, T1.TAMITEMVENDREBATEGROUPID AS PURCHASEREBATEVENDORGROUPID, T1.TAX1099AMOUNT AS TAX1099AMOUNT, T1.TAX1099STATE AS TAX1099STATEID, T1.TAX1099STATEAMOUNT AS TAX1099STATEAMOUNT, T1.PORT AS INTRASTATPORTID, T1.INTRASTATCOMMODITY AS INTRASTATCOMMODITY, T1.STATPROCID AS INTRASTATSTATISTICSPROCEDURECODE, T1.STATTRIANGULARDEAL AS ISINTRASTATTRIANGULARDEAL, T1.TRANSACTIONCODE AS INTRASTATTRANSACTIONCODE, T1.TRANSPORT AS INTRASTATTRANSPORTMODECODE, T1.ORIGCOUNTRYREGIONID AS ORIGINCOUNTRYREGIONID, T1.ORIGSTATEID AS ORIGINSTATEID, T1.UNDERDELIVERYPCT AS ALLOWEDUNDERDELIVERYPERCENTAGE, T1.VARIANTID AS RETAILPRODUCTVARIANTNUMBER, T1.TAX1099FIELDS AS TAX1099FIELDS, T1.REQUESTER AS REQUESTERRECID, T1.PROJID AS PROJECTID, T1.PROJCATEGORYID AS PROJECTCATEGORYID, T1.PROJSALESCURRENCYID AS PROJECTSALESCURRENCYCODE, T1.PROJTAXGROUPID AS PROJECTTAXGROUPCODE, T1.PROJTAXITEMGROUPID AS PROJECTTAXITEMGROUPCODE, T1.PROJSALESUNITID AS PROJECTSALESUNITSYMBOL, T1.PROJLINEPROPERTYID AS PROJECTLINEPROPERTYID, T1.PROJSALESPRICE AS PROJECTSALESPRICE, T1.ISPWP AS ISPROJECTPAYWHENPAID, T1.STATISTICVALUE_LT AS INTRASTATSTATISTICVALUE, T1.TAXWITHHOLDGROUP_TH AS WITHHOLDINGTAXGROUPCODE, T1.PURCHASEORDERLINECREATIONMETHOD AS PURCHASEORDERLINECREATIONMETHOD, T1.CFOPTABLE_BR AS CFOPTABLERECID, T1.TAXSERVICECODE_BR AS SERVICEFISCALINFORMATIONCODE, T1.ACTIVITYNUMBER AS PROJECTACTIVITYNUMBER, T1.BUDGETRESERVATIONLINE_PSN AS BUDGETRESERVATIONLINERECID, T1.PURCHREQID AS PURCHASEREQUISITIONID, T1.INVENTTRANSID AS INVENTORYLOTID, T1.ISADDEDBYCHANNEL AS ISADDEDBYCHANNEL, T1.WORKFLOWSTATE AS WORKFLOWSTATE, T1.PLANNINGPRIORITY AS PLANNINGPRIORITY, T1.OVERRIDESALESTAX AS OVERRIDESALESTAX, T1.ISDELETED AS ISDELETED, T1.SHIPCALENDARID AS SHIPCALENDARID, T1.SHIPPOSTALADDRESS AS VENDORSHIPFROMPOSTALADDRESSRECID, T1.SHIPNAME AS VENDORSHIPFROMADDRESSNAME, T1.CONFIRMEDSHIPDATE AS CONFIRMEDSHIPDATE, T1.DLVTERM AS DLVTERM, T1.DLVMODE AS DLVMODE, T1.MODIFIEDDATETIME AS MODIFIEDDATETIME, T1.CREATEDDATETIME AS CREATEDDATETIME, T1.RECVERSION AS RECVERSION, T1.DATAAREAID AS DATAAREAID, T1.PARTITION AS PARTITION, T1.RECID AS RECID, T2.NAME AS ACCOUNTINGDISTRIBUTIONTEMPLATENAME, T2.RECVERSION AS RECVERSION#2, T2.PARTITION AS PARTITION#2, T2.RECID AS RECID#2, T3.TAX1099TYPE AS TAX1099TYPE, T3.TAX1099BOX AS TAX1099BOXID, T3.RECVERSION AS RECVERSION#3, T3.DATAAREAID AS DATAAREAID#3, T3.PARTITION AS PARTITION#3, T3.RECID AS RECID#3, T4.CODE AS INTRASTATCOMMODITYCODE, T4.RECVERSION AS RECVERSION#4, T4.PARTITION AS PARTITION#4, T4.RECID AS RECID#4, T5.DISPLAYVALUE AS DEFAULTLEDGERDIMENSIONDISPLAYVALUE, T5.RECVERSION AS RECVERSION#5, T5.PARTITION AS PARTITION#5, T5.RECID AS RECID#5, T6.DISPLAYVALUE AS MAINACCOUNTIDDISPLAYVALUE, T6.RECVERSION AS RECVERSION#6, T6.PARTITION AS PARTITION#6, T6.RECID AS RECID#6, T7.ADDRESSRECID AS DELIVERYPOSTALADDRESSRECID, T7.LOCATIONID AS DELIVERYADDRESSLOCATIONID, T7.FORMATTEDDELIVERYADDRESS AS FORMATTEDDELVERYADDRESS, T7.BUILDINGCOMPLIMENT AS DELIVERYBUILDINGCOMPLIMENT, T7.CITY AS DELIVERYADDRESSCITY, T7.CITYINKANA AS DELIVERYCITYINKANA, T7.COUNTRYREGIONID AS DELIVERYADDRESSCOUNTRYREGIONID, T7.COUNTRYREGIONISOCODE AS DELIVERYADDRESSCOUNTRYREGIONISOCODE, T7.COUNTY AS DELIVERYADDRESSCOUNTYID, T7.DESCRIPTION AS DELIVERYADDRESSDESCRIPTION, T7.DISTRICTNAME AS DELIVERYADDRESSDISTRICTNAME, T7.DUNSNUMBER AS DELIVERYADDRESSDUNSNUMBER, T7.ISPRIVATE AS ISDELIVERYADDRESSPRIVATE, T7.LATITUDE AS DELIVERYADDRESSLATITUDE, T7.LONGITUDE AS DELIVERYADDRESSLONGITUDE, T7.POSTBOX AS DELIVERYADDRESSPOSTBOX, T7.STATE AS DELIVERYADDRESSSTATEID, T7.STREET AS DELIVERYADDRESSSTREET, T7.STREETINKANA AS DELIVERYSTREETINKANA, T7.STREETNUMBER AS DELIVERYADDRESSSTREETNUMBER, T7.VALIDFROM AS DELIVERYVALIDFROM, T7.VALIDTO AS DELIVERYVALIDTO, T7.TIMEZONE AS DELIVERYADDRESSTIMEZONE, T7.ZIPCODE AS DELIVERYADDRESSZIPCODE, T7.RECVERSION AS RECVERSION#7, T7.PARTITION AS PARTITION#7, T7.RECID AS RECID#7, T8.INVENTLOCATIONID AS RECEIVINGWAREHOUSEID, T8.INVENTSITEID AS RECEIVINGSITEID, T8.INVENTSIZEID AS PRODUCTSIZEID, T8.INVENTCOLORID AS PRODUCTCOLORID, T8.CONFIGID AS PRODUCTCONFIGURATIONID, T8.INVENTSTYLEID AS PRODUCTSTYLEID, T8.INVENTBATCHID AS ITEMBATCHNUMBER, T8.INVENTSTATUSID AS ORDEREDINVENTORYSTATUSID, T8.WMSLOCATIONID AS RECEIVINGWAREHOUSELOCATIONID, T8.INVENTSERIALID AS ITEMSERIALNUMBER, T8.RECVERSION AS RECVERSION#8, T8.DATAAREAID AS DATAAREAID#8, T8.PARTITION AS PARTITION#8, T8.RECID AS RECID#8, T9.STATE AS TAX1099GVENDORSTATEID, T9.TAX1099STATETAXID AS TAX1099GVENDORSTATETAXID, T9.TAX1099STATETAXWITHHELD AS TAX1099GSTATETAXWITHHELDAMOUNT, T9.TAX1099TAXYEAR AS TAX1099GTAXYEAR, T9.TAX1099TRADEORBUSINESS AS ISTAX1099GTRADEORBUSINESSINCOME, T9.TAX1099DATEOFCLOSING AS TAX1099SCLOSINGDATE, T9.TAX1099ADDRESSORLEGALDESC AS TAX1099SADDRESSORLEGALDESCRIPTION, T9.TAX1099PROPERTYORSERVICES AS ISTAX1099SPROPERTYORSERVICES, T9.TAX1099BUYERSTAX AS TAX1099SBUYERPARTOFREALESTATETAXAMOUNT, T9.RECVERSION AS RECVERSION#9, T9.DATAAREAID AS DATAAREAID#9, T9.PARTITION AS PARTITION#9, T9.RECID AS RECID#9, T10.UNITWEIGHT AS UNITWEIGHT, T10.NGPCODESTABLE_FR AS NGPCODERECID, T10.RECVERSION AS RECVERSION#10, T10.PARTITION AS PARTITION#10, T10.RECID AS RECID#10, T11.CROSSDOCK AS WILLPRODUCTRECEIVINGCROSSDOCKPRODUCTS, T11.RECVERSION AS RECVERSION#12, T11.DATAAREAID AS DATAAREAID#12, T11.PARTITION AS PARTITION#12, T11.RECID AS RECID#12, T12.PDSCWUNITID AS CATCHWEIGHTUNITSYMBOL, T12.RECVERSION AS RECVERSION#13, T12.DATAAREAID AS DATAAREAID#13, T12.PARTITION AS PARTITION#13, T12.RECID AS RECID#13, T13.NAME AS PROCUREMENTPRODUCTCATEGORYNAME, T13.RECVERSION AS RECVERSION#14, T13.PARTITION AS PARTITION#14, T13.RECID AS RECID#14, T14.PERSONNELNUMBER AS REQUESTERPERSONNELNUMBER, T14.RECVERSION AS RECVERSION#15, T14.PARTITION AS PARTITION#15, T14.RECID AS RECID#15, T15.PERSONNELNUMBER AS PROJECTWORKERPERSONNELNUMBER, T15.RECVERSION AS RECVERSION#16, T15.PARTITION AS PARTITION#16, T15.RECID AS RECID#16, T16.SPECIALMOVEMENT_CZ AS INTRASTATSPECIALMOVEMENTCODE, T16.RECVERSION AS RECVERSION#17, T16.DATAAREAID AS DATAAREAID#17, T16.PARTITION AS PARTITION#17, T16.RECID AS RECID#17, T17.TAXWITHHOLDITEMGROUP AS ITEMWITHHOLDINGTAXGROUPCODE, T17.RECVERSION AS RECVERSION#18, T17.DATAAREAID AS DATAAREAID#18, T17.PARTITION AS PARTITION#18, T17.RECID AS RECID#18, T18.CFOPID AS CFOPCODE, T18.RECVERSION AS RECVERSION#19, T18.DATAAREAID AS DATAAREAID#19, T18.PARTITION AS PARTITION#19, T18.RECID AS RECID#19, T19.LINENUMBER AS BUDGETRESERVATIONLINENUMBER, T19.RECVERSION AS RECVERSION#20, T19.DATAAREAID AS DATAAREAID#20, T19.PARTITION AS PARTITION#20, T19.RECID AS RECID#20, T20.VENDORRETENTIONTERMID AS VENDORRETENTIONTERMRULEID, T20.DESCRIPTION AS VENDORRETENTIONTERMRULEDESCRIPTION, T20.RECVERSION AS RECVERSION#22, T20.DATAAREAID AS DATAAREAID#22, T20.PARTITION AS PARTITION#22, T20.RECID AS RECID#22, T21.DISPLAYVALUE AS FINTAGDISPLAYVALUE, T21.RECVERSION AS RECVERSION#23, T21.PARTITION AS PARTITION#23, T21.RECID AS RECID#23, T22.OMOPERATINGUNITNUMBER AS ESTABLISHMENTNUMBER, T22.NAME AS ESTABLISHMENTNAME, T22.RECVERSION AS RECVERSION#24, T22.PARTITION AS PARTITION#24, T22.RECID AS RECID#24, T23.NGPCODE AS NGPCODE, T23.RECVERSION AS RECVERSION#11, T23.DATAAREAID AS DATAAREAID#11, T23.PARTITION AS PARTITION#11, T23.RECID AS RECID#11, T24.DOCUMENTNUMBER AS BUDGETRESERVATIONDOCUMENTNUMBER, T24.RECVERSION AS RECVERSION#21, T24.DATAAREAID AS DATAAREAID#21, T24.PARTITION AS PARTITION#21, T24.RECID AS RECID#21, (CAST ((0) AS INT)) AS ISDELIVERYADDRESSORDERSPECIFIC, (CAST ((1) AS INT)) AS SKIPCREATEAUTOCHARGES, (CAST ((1) AS INT)) AS CALCULATELINEAMOUNT, CAST(NULL AS NVARCHAR(10)) AS PRODUCTVERSIONID FROM PURCHLINE T1 LEFT OUTER JOIN ACCOUNTINGDISTRIBUTIONTEMPLATE T2 ON(( T1.ACCOUNTINGDISTRIBUTIONTEMPLATE  =  T2.RECID)  AND ( T1.PARTITION  =  T2.PARTITION)) LEFT OUTER JOIN TAX1099FIELDS T3 ON((( T1.TAX1099FIELDS  =  T3.RECID)  AND ( T1.DATAAREAID  =  T3.DATAAREAID))  AND ( T1.PARTITION  =  T3.PARTITION)) LEFT OUTER JOIN ECORESCATEGORY T4 ON(( T1.INTRASTATCOMMODITY  =  T4.RECID)  AND ( T1.PARTITION  =  T4.PARTITION)) LEFT OUTER JOIN DIMENSIONSETENTITY T5 ON(( T1.DEFAULTDIMENSION  =  T5.RECID)  AND ( T1.PARTITION  =  T5.PARTITION)) LEFT OUTER JOIN DIMENSIONCOMBINATIONENTITY T6 ON(( T1.LEDGERDIMENSION  =  T6.RECID)  AND ( T1.PARTITION  =  T6.PARTITION)) LEFT OUTER JOIN LOGISTICSPOSTALADDRESSBASEENTITY T7 ON((( T1.DELIVERYPOSTALADDRESS  =  T7.ADDRESSRECID)  AND ( T1.PARTITION  =  T7.PARTITION))  AND (( T7.VALIDFROM  <=  (SELECT ValidFromInContextInfo FROM [dbo].GetValidFromDateInContextInfoAsTable()))  AND ( T7.VALIDTO  >=  (SELECT ValidToInContextInfo FROM [dbo].GetValidToDateInContextInfoAsTable())))) LEFT OUTER JOIN INVENTDIM T8 ON((( T1.INVENTDIMID  =  T8.INVENTDIMID)  AND ( T1.DATAAREAID  =  T8.DATAAREAID))  AND ( T1.PARTITION  =  T8.PARTITION)) LEFT OUTER JOIN TAX1099BOXDETAIL T9 ON((( T1.TAX1099RECID  =  T9.RECID)  AND ( T1.DATAAREAID  =  T9.DATAAREAID))  AND ( T1.PARTITION  =  T9.PARTITION)) LEFT OUTER JOIN PURCHLINEFOREIGNTRADECATEGORY T10 ON((( T1.INVENTTRANSID  =  T10.PURCHLINEINVENTTRANSID)  AND ( T1.PARTITION  =  T10.PARTITION))  AND (( T1.DATAAREAID  =  T10.PURCHLINEDATAAREAID)  AND ( T1.PARTITION  =  T10.PARTITION))) LEFT OUTER JOIN WHSPURCHLINE T11 ON((( T1.INVENTTRANSID  =  T11.INVENTTRANSID)  AND ( T1.DATAAREAID  =  T11.DATAAREAID))  AND ( T1.PARTITION  =  T11.PARTITION)) LEFT OUTER JOIN PDSCATCHWEIGHTITEM T12 ON((( T1.ITEMID  =  T12.ITEMID)  AND ( T1.DATAAREAID  =  T12.DATAAREAID))  AND ( T1.PARTITION  =  T12.PARTITION)) LEFT OUTER JOIN ECORESCATEGORY T13 ON(( T1.PROCUREMENTCATEGORY  =  T13.RECID)  AND ( T1.PARTITION  =  T13.PARTITION)) LEFT OUTER JOIN HCMWORKER T14 ON(( T1.REQUESTER  =  T14.RECID)  AND ( T1.PARTITION  =  T14.PARTITION)) LEFT OUTER JOIN HCMWORKER T15 ON(( T1.PROJWORKER  =  T15.RECID)  AND ( T1.PARTITION  =  T15.PARTITION)) LEFT OUTER JOIN PURCHLINE_INTRASTAT T16 ON((( T1.RECID  =  T16.PURCHLINE)  AND ( T1.DATAAREAID  =  T16.DATAAREAID))  AND ( T1.PARTITION  =  T16.PARTITION)) LEFT OUTER JOIN TAXWITHHOLDITEMGROUPHEADING_TH T17 ON((( T1.TAXWITHHOLDITEMGROUPHEADING_TH  =  T17.RECID)  AND ( T1.DATAAREAID  =  T17.DATAAREAID))  AND ( T1.PARTITION  =  T17.PARTITION)) LEFT OUTER JOIN CFOPTABLE_BR T18 ON((( T1.CFOPTABLE_BR  =  T18.RECID)  AND ( T1.DATAAREAID  =  T18.DATAAREAID))  AND ( T1.PARTITION  =  T18.PARTITION)) LEFT OUTER JOIN BUDGETRESERVATIONLINE_PSN T19 ON((( T1.BUDGETRESERVATIONLINE_PSN  =  T19.RECID)  AND ( T1.DATAAREAID  =  T19.DATAAREAID))  AND ( T1.PARTITION  =  T19.PARTITION)) LEFT OUTER JOIN PSAVENDORRETENTIONTERMSTABLE T20 ON((( T1.PSARETAINSCHEDULEID  =  T20.VENDORRETENTIONTERMID)  AND ( T1.DATAAREAID  =  T20.DATAAREAID))  AND ( T1.PARTITION  =  T20.PARTITION)) LEFT OUTER JOIN FINTAG T21 ON(( T1.FINTAG  =  T21.RECID)  AND ( T1.PARTITION  =  T21.PARTITION)) LEFT OUTER JOIN DIRPARTYTABLE T22 ON((( T1.ESTABLISHMENT  =  T22.RECID)  AND ( T1.PARTITION  =  T22.PARTITION))  AND  T22.INSTANCERELATIONTYPE IN( 8363)) LEFT OUTER JOIN NGPCODESTABLE_FR T23 ON(( T10.NGPCODESTABLE_FR  =  T23.RECID)  AND ( T10.PARTITION  =  T23.PARTITION)) LEFT OUTER JOIN BUDGETRESERVATIONHEADER_PSN T24 ON((( T19.BUDGETRESERVATIONHEADER_PSN  =  T24.RECID)  AND ( T19.DATAAREAID  =  T24.DATAAREAID))  AND ( T19.PARTITION  =  T24.PARTITION)) WHERE(( T1.ISDELETED  =  0)  AND ( T1.PURCHASETYPE  =  3))",
+          "is_encrypted": 0,
+          "source_file": "definitions.jsonl",
+          "source_hash": "2a716d78288734f3519a23b54bf01f9fd01fd59cd9ed0603c1ef1b2c808af592"
+        },
+        "columns": [
+          {
+            "object_key": "live49:683731511",
+            "column_id": 1,
+            "name": "PURCHASEORDERLINESTATUS",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 2,
+            "name": "SALESTAXITEMGROUPCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 3,
+            "name": "SALESTAXGROUPCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 4,
+            "name": "ACCOUNTINGDISTRIBUTIONTEMPLATE",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 5,
+            "name": "FIXEDASSETVALUEMODELID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 6,
+            "name": "FIXEDASSETGROUPID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 7,
+            "name": "FIXEDASSETNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 8,
+            "name": "FIXEDASSETTRANSACTIONTYPE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 9,
+            "name": "BARCODE",
+            "data_type": "nvarchar",
+            "max_length": "160",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 10,
+            "name": "BARCODESETUPID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 11,
+            "name": "ISLINESTOPPED",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 12,
+            "name": "ISPARTIALDELIVERYPREVENTED",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 13,
+            "name": "CONFIRMEDDELIVERYDATE",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 14,
+            "name": "ISNEWFIXEDASSET",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 15,
+            "name": "CUSTOMERREFERENCE",
+            "data_type": "nvarchar",
+            "max_length": "120",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 16,
+            "name": "CUSTOMERREQUISITIONNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 17,
+            "name": "DEFAULTLEDGERDIMENSION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 18,
+            "name": "REQUESTEDDELIVERYDATE",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 19,
+            "name": "DELIVERYADDRESSNAME",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 20,
+            "name": "EXTERNALITEMNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 21,
+            "name": "GSTHSTTAXTYPE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 22,
+            "name": "BOMID",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 23,
+            "name": "ITEMNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 24,
+            "name": "ROUTEID",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 25,
+            "name": "MAINACCOUNTID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 26,
+            "name": "LINEAMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 27,
+            "name": "LINEDISCOUNTAMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 28,
+            "name": "LINENUMBER",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 29,
+            "name": "LINEDISCOUNTPERCENTAGE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 30,
+            "name": "VENDORINVOICEMATCHINGPOLICY",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 31,
+            "name": "MULTILINEDISCOUNTAMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 32,
+            "name": "MULTILINEDISCOUNTPERCENTAGE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 33,
+            "name": "LINEDESCRIPTION",
+            "data_type": "nvarchar",
+            "max_length": "2000",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 34,
+            "name": "DIOTOPERATIONTYPE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 35,
+            "name": "ALLOWEDOVERDELIVERYPERCENTAGE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 36,
+            "name": "ORDEREDCATCHWEIGHTQUANTITY",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 37,
+            "name": "PURCHASEPRICEQUANTITY",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "12",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 38,
+            "name": "PROCUREMENTPRODUCTCATEGORYRECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 39,
+            "name": "PURCHASEORDERNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 40,
+            "name": "FIXEDPRICECHARGES",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 41,
+            "name": "PURCHASEPRICE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 42,
+            "name": "ORDEREDPURCHASEQUANTITY",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 43,
+            "name": "PURCHASEUNITSYMBOL",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 44,
+            "name": "CONFIRMEDSHIPPINGDATE",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 45,
+            "name": "REQUESTEDSHIPPINGDATE",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 46,
+            "name": "PURCHASEREBATEVENDORGROUPID",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 47,
+            "name": "TAX1099AMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 48,
+            "name": "TAX1099STATEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 49,
+            "name": "TAX1099STATEAMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 50,
+            "name": "INTRASTATPORTID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 51,
+            "name": "INTRASTATCOMMODITY",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 52,
+            "name": "INTRASTATSTATISTICSPROCEDURECODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 53,
+            "name": "ISINTRASTATTRIANGULARDEAL",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 54,
+            "name": "INTRASTATTRANSACTIONCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 55,
+            "name": "INTRASTATTRANSPORTMODECODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 56,
+            "name": "ORIGINCOUNTRYREGIONID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 57,
+            "name": "ORIGINSTATEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 58,
+            "name": "ALLOWEDUNDERDELIVERYPERCENTAGE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 59,
+            "name": "RETAILPRODUCTVARIANTNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 60,
+            "name": "TAX1099FIELDS",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 61,
+            "name": "REQUESTERRECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 62,
+            "name": "PROJECTID",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 63,
+            "name": "PROJECTCATEGORYID",
+            "data_type": "nvarchar",
+            "max_length": "60",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 64,
+            "name": "PROJECTSALESCURRENCYCODE",
+            "data_type": "nvarchar",
+            "max_length": "6",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 65,
+            "name": "PROJECTTAXGROUPCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 66,
+            "name": "PROJECTTAXITEMGROUPCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 67,
+            "name": "PROJECTSALESUNITSYMBOL",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 68,
+            "name": "PROJECTLINEPROPERTYID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 69,
+            "name": "PROJECTSALESPRICE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 70,
+            "name": "ISPROJECTPAYWHENPAID",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 71,
+            "name": "INTRASTATSTATISTICVALUE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 72,
+            "name": "WITHHOLDINGTAXGROUPCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 73,
+            "name": "PURCHASEORDERLINECREATIONMETHOD",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 74,
+            "name": "CFOPTABLERECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 75,
+            "name": "SERVICEFISCALINFORMATIONCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 76,
+            "name": "PROJECTACTIVITYNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "100",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 77,
+            "name": "BUDGETRESERVATIONLINERECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 78,
+            "name": "PURCHASEREQUISITIONID",
+            "data_type": "nvarchar",
+            "max_length": "50",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 79,
+            "name": "INVENTORYLOTID",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 80,
+            "name": "ISADDEDBYCHANNEL",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 81,
+            "name": "WORKFLOWSTATE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 82,
+            "name": "PLANNINGPRIORITY",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "2",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 83,
+            "name": "OVERRIDESALESTAX",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 84,
+            "name": "ISDELETED",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 85,
+            "name": "SHIPCALENDARID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 86,
+            "name": "VENDORSHIPFROMPOSTALADDRESSRECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 87,
+            "name": "VENDORSHIPFROMADDRESSNAME",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 88,
+            "name": "CONFIRMEDSHIPDATE",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 89,
+            "name": "DLVTERM",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 90,
+            "name": "DLVMODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 91,
+            "name": "MODIFIEDDATETIME",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 92,
+            "name": "CREATEDDATETIME",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 93,
+            "name": "RECVERSION",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 94,
+            "name": "DATAAREAID",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 95,
+            "name": "PARTITION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 96,
+            "name": "RECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 97,
+            "name": "ACCOUNTINGDISTRIBUTIONTEMPLATENAME",
+            "data_type": "nvarchar",
+            "max_length": "80",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 98,
+            "name": "RECVERSION#2",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 99,
+            "name": "PARTITION#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 100,
+            "name": "RECID#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 101,
+            "name": "TAX1099TYPE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 102,
+            "name": "TAX1099BOXID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 103,
+            "name": "RECVERSION#3",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 104,
+            "name": "DATAAREAID#3",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 105,
+            "name": "PARTITION#3",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 106,
+            "name": "RECID#3",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 107,
+            "name": "INTRASTATCOMMODITYCODE",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 108,
+            "name": "RECVERSION#4",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 109,
+            "name": "PARTITION#4",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 110,
+            "name": "RECID#4",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 111,
+            "name": "DEFAULTLEDGERDIMENSIONDISPLAYVALUE",
+            "data_type": "nvarchar",
+            "max_length": "1000",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 112,
+            "name": "RECVERSION#5",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 113,
+            "name": "PARTITION#5",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 114,
+            "name": "RECID#5",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 115,
+            "name": "MAINACCOUNTIDDISPLAYVALUE",
+            "data_type": "nvarchar",
+            "max_length": "1000",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 116,
+            "name": "RECVERSION#6",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 117,
+            "name": "PARTITION#6",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 118,
+            "name": "RECID#6",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 119,
+            "name": "DELIVERYPOSTALADDRESSRECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 120,
+            "name": "DELIVERYADDRESSLOCATIONID",
+            "data_type": "nvarchar",
+            "max_length": "80",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 121,
+            "name": "FORMATTEDDELVERYADDRESS",
+            "data_type": "nvarchar",
+            "max_length": "500",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 122,
+            "name": "DELIVERYBUILDINGCOMPLIMENT",
+            "data_type": "nvarchar",
+            "max_length": "120",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 123,
+            "name": "DELIVERYADDRESSCITY",
+            "data_type": "nvarchar",
+            "max_length": "120",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 124,
+            "name": "DELIVERYCITYINKANA",
+            "data_type": "nvarchar",
+            "max_length": "120",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 125,
+            "name": "DELIVERYADDRESSCOUNTRYREGIONID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 126,
+            "name": "DELIVERYADDRESSCOUNTRYREGIONISOCODE",
+            "data_type": "nvarchar",
+            "max_length": "4",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 127,
+            "name": "DELIVERYADDRESSCOUNTYID",
+            "data_type": "nvarchar",
+            "max_length": "60",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 128,
+            "name": "DELIVERYADDRESSDESCRIPTION",
+            "data_type": "nvarchar",
+            "max_length": "120",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 129,
+            "name": "DELIVERYADDRESSDISTRICTNAME",
+            "data_type": "nvarchar",
+            "max_length": "120",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 130,
+            "name": "DELIVERYADDRESSDUNSNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "18",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 131,
+            "name": "ISDELIVERYADDRESSPRIVATE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 132,
+            "name": "DELIVERYADDRESSLATITUDE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "10",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 133,
+            "name": "DELIVERYADDRESSLONGITUDE",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "10",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 134,
+            "name": "DELIVERYADDRESSPOSTBOX",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 135,
+            "name": "DELIVERYADDRESSSTATEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 136,
+            "name": "DELIVERYADDRESSSTREET",
+            "data_type": "nvarchar",
+            "max_length": "500",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 137,
+            "name": "DELIVERYSTREETINKANA",
+            "data_type": "nvarchar",
+            "max_length": "500",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 138,
+            "name": "DELIVERYADDRESSSTREETNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 139,
+            "name": "DELIVERYVALIDFROM",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 140,
+            "name": "DELIVERYVALIDTO",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 141,
+            "name": "DELIVERYADDRESSTIMEZONE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 142,
+            "name": "DELIVERYADDRESSZIPCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 143,
+            "name": "RECVERSION#7",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 144,
+            "name": "PARTITION#7",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 145,
+            "name": "RECID#7",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 146,
+            "name": "RECEIVINGWAREHOUSEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 147,
+            "name": "RECEIVINGSITEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 148,
+            "name": "PRODUCTSIZEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 149,
+            "name": "PRODUCTCOLORID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 150,
+            "name": "PRODUCTCONFIGURATIONID",
+            "data_type": "nvarchar",
+            "max_length": "100",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 151,
+            "name": "PRODUCTSTYLEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 152,
+            "name": "ITEMBATCHNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 153,
+            "name": "ORDEREDINVENTORYSTATUSID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 154,
+            "name": "RECEIVINGWAREHOUSELOCATIONID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 155,
+            "name": "ITEMSERIALNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 156,
+            "name": "RECVERSION#8",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 157,
+            "name": "DATAAREAID#8",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 158,
+            "name": "PARTITION#8",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 159,
+            "name": "RECID#8",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 160,
+            "name": "TAX1099GVENDORSTATEID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 161,
+            "name": "TAX1099GVENDORSTATETAXID",
+            "data_type": "nvarchar",
+            "max_length": "22",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 162,
+            "name": "TAX1099GSTATETAXWITHHELDAMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 163,
+            "name": "TAX1099GTAXYEAR",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 164,
+            "name": "ISTAX1099GTRADEORBUSINESSINCOME",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 165,
+            "name": "TAX1099SCLOSINGDATE",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 166,
+            "name": "TAX1099SADDRESSORLEGALDESCRIPTION",
+            "data_type": "nvarchar",
+            "max_length": "78",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 167,
+            "name": "ISTAX1099SPROPERTYORSERVICES",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 168,
+            "name": "TAX1099SBUYERPARTOFREALESTATETAXAMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 169,
+            "name": "RECVERSION#9",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 170,
+            "name": "DATAAREAID#9",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 171,
+            "name": "PARTITION#9",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 172,
+            "name": "RECID#9",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 173,
+            "name": "UNITWEIGHT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "12",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 174,
+            "name": "NGPCODERECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 175,
+            "name": "RECVERSION#10",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 176,
+            "name": "PARTITION#10",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 177,
+            "name": "RECID#10",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 178,
+            "name": "WILLPRODUCTRECEIVINGCROSSDOCKPRODUCTS",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 179,
+            "name": "RECVERSION#12",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 180,
+            "name": "DATAAREAID#12",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 181,
+            "name": "PARTITION#12",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 182,
+            "name": "RECID#12",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 183,
+            "name": "CATCHWEIGHTUNITSYMBOL",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 184,
+            "name": "RECVERSION#13",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 185,
+            "name": "DATAAREAID#13",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 186,
+            "name": "PARTITION#13",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 187,
+            "name": "RECID#13",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 188,
+            "name": "PROCUREMENTPRODUCTCATEGORYNAME",
+            "data_type": "nvarchar",
+            "max_length": "508",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 189,
+            "name": "RECVERSION#14",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 190,
+            "name": "PARTITION#14",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 191,
+            "name": "RECID#14",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 192,
+            "name": "REQUESTERPERSONNELNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "50",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 193,
+            "name": "RECVERSION#15",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 194,
+            "name": "PARTITION#15",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 195,
+            "name": "RECID#15",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 196,
+            "name": "PROJECTWORKERPERSONNELNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "50",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 197,
+            "name": "RECVERSION#16",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 198,
+            "name": "PARTITION#16",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 199,
+            "name": "RECID#16",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 200,
+            "name": "INTRASTATSPECIALMOVEMENTCODE",
+            "data_type": "nvarchar",
+            "max_length": "4",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 201,
+            "name": "RECVERSION#17",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 202,
+            "name": "DATAAREAID#17",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 203,
+            "name": "PARTITION#17",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 204,
+            "name": "RECID#17",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 205,
+            "name": "ITEMWITHHOLDINGTAXGROUPCODE",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 206,
+            "name": "RECVERSION#18",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 207,
+            "name": "DATAAREAID#18",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 208,
+            "name": "PARTITION#18",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 209,
+            "name": "RECID#18",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 210,
+            "name": "CFOPCODE",
+            "data_type": "nvarchar",
+            "max_length": "10",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 211,
+            "name": "RECVERSION#19",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 212,
+            "name": "DATAAREAID#19",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 213,
+            "name": "PARTITION#19",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 214,
+            "name": "RECID#19",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 215,
+            "name": "BUDGETRESERVATIONLINENUMBER",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 216,
+            "name": "RECVERSION#20",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 217,
+            "name": "DATAAREAID#20",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 218,
+            "name": "PARTITION#20",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 219,
+            "name": "RECID#20",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 220,
+            "name": "VENDORRETENTIONTERMRULEID",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 221,
+            "name": "VENDORRETENTIONTERMRULEDESCRIPTION",
+            "data_type": "nvarchar",
+            "max_length": "120",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 222,
+            "name": "RECVERSION#22",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 223,
+            "name": "DATAAREAID#22",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 224,
+            "name": "PARTITION#22",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 225,
+            "name": "RECID#22",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 226,
+            "name": "FINTAGDISPLAYVALUE",
+            "data_type": "nvarchar",
+            "max_length": "-1",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 227,
+            "name": "RECVERSION#23",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 228,
+            "name": "PARTITION#23",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 229,
+            "name": "RECID#23",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 230,
+            "name": "ESTABLISHMENTNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "60",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 231,
+            "name": "ESTABLISHMENTNAME",
+            "data_type": "nvarchar",
+            "max_length": "320",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 232,
+            "name": "RECVERSION#24",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 233,
+            "name": "PARTITION#24",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 234,
+            "name": "RECID#24",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 235,
+            "name": "NGPCODE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 236,
+            "name": "RECVERSION#11",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 237,
+            "name": "DATAAREAID#11",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 238,
+            "name": "PARTITION#11",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 239,
+            "name": "RECID#11",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 240,
+            "name": "BUDGETRESERVATIONDOCUMENTNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 241,
+            "name": "RECVERSION#21",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 242,
+            "name": "DATAAREAID#21",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 243,
+            "name": "PARTITION#21",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 244,
+            "name": "RECID#21",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 245,
+            "name": "ISDELIVERYADDRESSORDERSPECIFIC",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 246,
+            "name": "SKIPCREATEAUTOCHARGES",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 247,
+            "name": "CALCULATELINEAMOUNT",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:683731511",
+            "column_id": 248,
+            "name": "PRODUCTVERSIONID",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          }
+        ],
+        "dependencies": [
+          {
+            "id": 9159,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1109631046",
+            "referenced_schema": null,
+            "referenced_name": "ACCOUNTINGDISTRIBUTIONTEMPLATE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9160,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1582784846",
+            "referenced_schema": null,
+            "referenced_name": "BUDGETRESERVATIONHEADER_PSN",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9161,
+            "source_key": "live49:683731511",
+            "target_key": "live49:132507851",
+            "referenced_schema": null,
+            "referenced_name": "BUDGETRESERVATIONLINE_PSN",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9162,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1761857789",
+            "referenced_schema": null,
+            "referenced_name": "CFOPTABLE_BR",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9163,
+            "source_key": "live49:683731511",
+            "target_key": "live49:2085736491",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONCOMBINATIONENTITY",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9164,
+            "source_key": "live49:683731511",
+            "target_key": "live49:164909517",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONSETENTITY",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9165,
+            "source_key": "live49:683731511",
+            "target_key": "live49:717050136",
+            "referenced_schema": null,
+            "referenced_name": "DIRPARTYTABLE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9166,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1273419956",
+            "referenced_schema": null,
+            "referenced_name": "ECORESCATEGORY",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9167,
+            "source_key": "live49:683731511",
+            "target_key": "live49:492281259",
+            "referenced_schema": null,
+            "referenced_name": "FINTAG",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9168,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1808827464",
+            "referenced_schema": "dbo",
+            "referenced_name": "GetValidFromDateInContextInfoAsTable",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9169,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1776827350",
+            "referenced_schema": "dbo",
+            "referenced_name": "GetValidToDateInContextInfoAsTable",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9170,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1585440722",
+            "referenced_schema": null,
+            "referenced_name": "HCMWORKER",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9171,
+            "source_key": "live49:683731511",
+            "target_key": "live49:305188633",
+            "referenced_schema": null,
+            "referenced_name": "INVENTDIM",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9172,
+            "source_key": "live49:683731511",
+            "target_key": "live49:2092687334",
+            "referenced_schema": null,
+            "referenced_name": "LOGISTICSPOSTALADDRESSBASEENTITY",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9173,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1630889127",
+            "referenced_schema": null,
+            "referenced_name": "NGPCODESTABLE_FR",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9174,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1416444170",
+            "referenced_schema": null,
+            "referenced_name": "PDSCATCHWEIGHTITEM",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9175,
+            "source_key": "live49:683731511",
+            "target_key": "live49:683917558",
+            "referenced_schema": null,
+            "referenced_name": "PSAVENDORRETENTIONTERMSTABLE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9176,
+            "source_key": "live49:683731511",
+            "target_key": "live49:702169797",
+            "referenced_schema": null,
+            "referenced_name": "PURCHLINE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9177,
+            "source_key": "live49:683731511",
+            "target_key": "live49:713417961",
+            "referenced_schema": null,
+            "referenced_name": "PURCHLINE_INTRASTAT",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9178,
+            "source_key": "live49:683731511",
+            "target_key": "live49:681365792",
+            "referenced_schema": null,
+            "referenced_name": "PURCHLINEFOREIGNTRADECATEGORY",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9179,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1569193136",
+            "referenced_schema": null,
+            "referenced_name": "TAX1099BOXDETAIL",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9180,
+            "source_key": "live49:683731511",
+            "target_key": "live49:755338301",
+            "referenced_schema": null,
+            "referenced_name": "TAX1099FIELDS",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9181,
+            "source_key": "live49:683731511",
+            "target_key": "live49:1099919040",
+            "referenced_schema": null,
+            "referenced_name": "TAXWITHHOLDITEMGROUPHEADING_TH",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 9182,
+            "source_key": "live49:683731511",
+            "target_key": "live49:388664928",
+            "referenced_schema": null,
+            "referenced_name": "WHSPURCHLINE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          }
+        ],
+        "indexes": []
+      }
+    },
+    {
+      "source_id": "sql-application-catalog-20261023",
+      "evidence_id": "aa77ceb9d2330751760dc9aefa5fa24d",
+      "packed_sha256": "da2923bc84713c5a96c20745656a4748fad935a69901935b7dff7e9b5ea8d0e6",
+      "captured_object": {
+        "object": {
+          "id": "live49:164909517",
+          "database_name": "db_d365opsuae_dxperts_ax_20240803_02262986_0bbb",
+          "object_id": 164909517,
+          "schema_name": "dbo",
+          "name": "DIMENSIONSETENTITY",
+          "display_name": "DimensionSetEntity",
+          "kind": "VIEW",
+          "definition": "CREATE VIEW [DBO].[DIMENSIONSETENTITY] AS SELECT T1.RECID AS RECORDID, T1.MAINACCOUNTVALUE AS MAINACCOUNT, T1.MODIFIEDDATETIME AS MODIFIEDDATETIME, T1.MODIFIEDBY AS MODIFIEDBY, T1.CREATEDDATETIME AS CREATEDDATETIME, T1.CREATEDBY AS CREATEDBY, T1.RECVERSION AS RECVERSION, T1.PARTITION AS PARTITION, T1.RECID AS RECID, (CAST ((\r\n                SELECT (\r\n                   SELECT CASE WHEN\r\n                            NonNullDisplayValue IS NOT NULL\r\n                            THEN NonNullDisplayValue\r\n                            ELSE 'No active format for data entities has been set up.\r\nSet up an active format for each dimension format type.'\r\n                        END\r\n                        FROM\r\n                        (\r\n                        -- Remove initial delimiter\r\n                        SELECT STUFF(\r\n                            (SELECT\r\n                                    -- Prepend with delimiter and escape internal delimiters\r\n                                    DIMENSIONSEGMENTDELIMITER + COALESCE(\r\n                                        REPLACE(REPLACE(DIMLIST.DISPLAYVALUE, '\\', '\\\\'),\r\n                                                DIMENSIONSEGMENTDELIMITER,\r\n                                                DIMENSIONSEGMENTDELIMITERESCAPED),\r\n                                        '')\r\n                                FROM\r\n                                    (SELECT TOP (1) DH.RECID\r\n                                        FROM DIMENSIONHIERARCHY DH\r\n                                        JOIN DIMENSIONHIERARCHYINTEGRATION DHI\r\n                                            ON DHI.DIMENSIONHIERARCHY = DH.RECID\r\n                                            AND DHI.ISDEFAULT = 1\r\n                                            AND DHI.PARTITION = T1.PARTITION\r\n                                        WHERE\r\n                                            DH.PARTITION = T1.PARTITION\r\n                                            AND DH.STRUCTURETYPE = 17\r\n                                    ) AS DH\r\n                                JOIN DIMENSIONHIERARCHYLEVEL DHL\r\n                                    ON DHL.DIMENSIONHIERARCHY = DH.RECID AND DHL.PARTITION = T1.PARTITION\r\n                                JOIN DIMENSIONATTRIBUTE DA\r\n                                    ON DA.RECID = DHL.DIMENSIONATTRIBUTE AND DA.PARTITION = T1.PARTITION\r\n                                LEFT JOIN\r\n                                        (SELECT DIMENSIONATTRIBUTE, DISPLAYVALUE\r\n                                            FROM\r\n                                                (SELECT * FROM DIMENSIONATTRIBUTEVALUESET DAVS\r\n                                                    WHERE DAVS.PARTITION = T1.PARTITION AND DAVS.RECID = T1.RECID) P\r\n\r\n                                            UNPIVOT\r\n                                                (DISPLAYVALUE for DIMENSIONATTRIBUTE IN (ACCOUNTVALUE, AGREEMENTVALUE, BANKACCOUNTVALUE, BUSINESSUNITVALUE, BUSINESSUNIT_FRVALUE, CAMPAIGNVALUE, CARGOVALUE, CASHFLOW_CNVALUE, CENTERVALUE, CONDITIONVALUE, CONTRACTVALUE, COSTCENTERVALUE, COSTCENTER_CNVALUE, CUSTOMERVALUE, DEPARTMENTVALUE, DEPARTMENT_CNVALUE, DIVISIONVALUE, EXPENSEANDINCOMECODEVALUE, FILIALVALUE, FISCALESTABLISHMENTVALUE, FUNDVALUE, GROUPSVALUE, ITEMGROUPVALUE, JOBSKILLSVALUE, LABORTYPEVALUE, LEGALENTITYVALUE, LOCATIONVALUE, MAINACCOUNTVALUE, OBJECTCLASSVALUE, OWNERSHIP_CNVALUE, PRIMARY_VALUE, PRODUCTGROUPVALUE, PROGRAMVALUE, PROJECTVALUE, PURPOSEVALUE, PURPOSE_CNVALUE, RETAILCHANNELVALUE, SERVICELINEVALUE, STOREVALUE, SYSTEMGENERATEDATTRIBUTEBANKACCOUNTVALUE, SYSTEMGENERATEDATTRIBUTECUSTOMERVALUE, SYSTEMGENERATEDATTRIBUTEEMPLOYEEVALUE, SYSTEMGENERATEDATTRIBUTEEMPLOYEE_RUVALUE, SYSTEMGENERATEDATTRIBUTEFIXEDASSETS_RUVALUE, SYSTEMGENERATEDATTRIBUTEFIXEDASSETVALUE, SYSTEMGENERATEDATTRIBUTEITEMVALUE, SYSTEMGENERATEDATTRIBUTEPROJECTVALUE, SYSTEMGENERATEDATTRIBUTERCASHVALUE, SYSTEMGENERATEDATTRIBUTERDEFERRALSVALUE, SYSTEMGENERATEDATTRIBUTEVENDORVALUE, TAXBRANCHVALUE, TERMINALVALUE, VEHICLEVALUE, WORKERVALUE))\r\n                                                        AS DIMENSIONVALUECOLUMNNAME\r\n                                        ) AS DIMLIST \r\n                                    ON\r\n                                        DIMLIST.DIMENSIONATTRIBUTE = REPLACE(DA.DIMENSIONVALUECOLUMNNAME COLLATE Database_Default, '.', '$')\r\n                                ORDER BY DHL.DIMENSIONHIERARCHY, DHL.LEVEL_\r\n                                FOR XML PATH(''), TYPE\r\n                            ).value('(./text())[1]', 'NVARCHAR(MAX)'),\r\n                            1, LEN(DIMENSIONSEGMENTDELIMITER), '')\r\n                         AS NonNullDisplayValue)\r\n                    AS DisplayValueFormat)\r\n                    FROM\r\n                        (SELECT TOP(1)\r\n                                --Determine the account delimiter\r\n                                CASE DIMENSIONSEGMENTDELIMITER\r\n                                    WHEN 0 THEN '-'\nWHEN 1 THEN '.'\nWHEN 2 THEN '_'\nWHEN 3 THEN '|'\nWHEN 7 THEN '||'\nWHEN 8 THEN '~'\nWHEN 4 THEN '--'\nWHEN 5 THEN '..'\nWHEN 6 THEN '__'\nWHEN 9 THEN '~~'\n\r\n                                END AS DIMENSIONSEGMENTDELIMITER,\r\n                            --Determine the account delimiter escaped\r\n                            CASE DIMENSIONSEGMENTDELIMITER\r\n                                WHEN 0 THEN '\\-'\nWHEN 1 THEN '\\.'\nWHEN 2 THEN '\\_'\nWHEN 3 THEN '\\|'\nWHEN 7 THEN '\\|\\|'\nWHEN 8 THEN '\\~'\nWHEN 4 THEN '\\-\\-'\nWHEN 5 THEN '\\.\\.'\nWHEN 6 THEN '\\_\\_'\nWHEN 9 THEN '\\~\\~'\n\r\n                            END AS DIMENSIONSEGMENTDELIMITERESCAPED\r\n                        FROM DIMENSIONPARAMETERS\r\n                        WHERE DIMENSIONPARAMETERS.PARTITION = T1.PARTITION\r\n                    ) AS DIMENSIONPARAMETERS\r\n                ) AS NVARCHAR(500))) AS DISPLAYVALUE FROM DIMENSIONATTRIBUTEVALUESET T1",
+          "is_encrypted": 0,
+          "source_file": "definitions.jsonl",
+          "source_hash": "2a716d78288734f3519a23b54bf01f9fd01fd59cd9ed0603c1ef1b2c808af592"
+        },
+        "columns": [
+          {
+            "object_key": "live49:164909517",
+            "column_id": 1,
+            "name": "RECORDID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 2,
+            "name": "MAINACCOUNT",
+            "data_type": "nvarchar",
+            "max_length": "60",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 3,
+            "name": "MODIFIEDDATETIME",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 4,
+            "name": "MODIFIEDBY",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 5,
+            "name": "CREATEDDATETIME",
+            "data_type": "datetime",
+            "max_length": "8",
+            "precision": "23",
+            "scale": "3",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 6,
+            "name": "CREATEDBY",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 7,
+            "name": "RECVERSION",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 8,
+            "name": "PARTITION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 9,
+            "name": "RECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:164909517",
+            "column_id": 10,
+            "name": "DISPLAYVALUE",
+            "data_type": "nvarchar",
+            "max_length": "1000",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          }
+        ],
+        "dependencies": [
+          {
+            "id": 2418,
+            "source_key": "live49:164909517",
+            "target_key": "live49:380332915",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONATTRIBUTE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 2419,
+            "source_key": "live49:164909517",
+            "target_key": "live49:496720822",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONATTRIBUTEVALUESET",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 2420,
+            "source_key": "live49:164909517",
+            "target_key": "live49:1873910243",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONHIERARCHY",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 2421,
+            "source_key": "live49:164909517",
+            "target_key": "live49:1597352855",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONHIERARCHYINTEGRATION",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 2422,
+            "source_key": "live49:164909517",
+            "target_key": "live49:1298155720",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONHIERARCHYLEVEL",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 2423,
+            "source_key": "live49:164909517",
+            "target_key": "live49:1347236300",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONPARAMETERS",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          }
+        ],
+        "indexes": []
+      }
+    },
+    {
+      "source_id": "sql-application-catalog-20261023",
+      "evidence_id": "d44659e08464203eb2f78ac392808206",
+      "packed_sha256": "4d433bdd0bb0892e8d88e61d666e91c808371480a3c8a246b3af63b3288031b7",
+      "captured_object": {
+        "object": {
+          "id": "live49:1945055823",
+          "database_name": "db_d365opsuae_dxperts_ax_20240803_02262986_0bbb",
+          "object_id": 1945055823,
+          "schema_name": "dbo",
+          "name": "DIMATTRIBUTECOMPANYINFO",
+          "display_name": "DimAttributeCompanyInfo",
+          "kind": "VIEW",
+          "definition": "CREATE VIEW [DBO].[DIMATTRIBUTECOMPANYINFO] AS SELECT T1.RECID AS KEY_, T1.DATAAREA AS VALUE, T1.PARTITION AS PARTITION, T1.RECID AS RECID, T2.NAME AS NAME, T2.PARTITION AS PARTITION#2 FROM DIRPARTYTABLE T1 CROSS JOIN DIRPARTYTABLE T2 WHERE((( T1.RECID  =  T2.RECID)  AND ( T1.PARTITION  =  T2.PARTITION))  AND  T1.INSTANCERELATIONTYPE IN( 9027))",
+          "is_encrypted": 0,
+          "source_file": "definitions.jsonl",
+          "source_hash": "2a716d78288734f3519a23b54bf01f9fd01fd59cd9ed0603c1ef1b2c808af592"
+        },
+        "columns": [
+          {
+            "object_key": "live49:1945055823",
+            "column_id": 1,
+            "name": "KEY_",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1945055823",
+            "column_id": 2,
+            "name": "VALUE",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:1945055823",
+            "column_id": 3,
+            "name": "PARTITION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1945055823",
+            "column_id": 4,
+            "name": "RECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1945055823",
+            "column_id": 5,
+            "name": "NAME",
+            "data_type": "nvarchar",
+            "max_length": "320",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1945055823",
+            "column_id": 6,
+            "name": "PARTITION#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          }
+        ],
+        "dependencies": [
+          {
+            "id": 26227,
+            "source_key": "live49:1945055823",
+            "target_key": "live49:717050136",
+            "referenced_schema": null,
+            "referenced_name": "DIRPARTYTABLE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          }
+        ],
+        "indexes": []
+      }
+    },
+    {
+      "source_id": "sql-application-catalog-20261023",
+      "evidence_id": "fd5f89c6c056057362dca3a6d540e7c4",
+      "packed_sha256": "0a1997fb6168d0143306b13ddee09290dfe99325b6e7e4f909f195b027b369ed",
+      "captured_object": {
+        "object": {
+          "id": "live49:1655062890",
+          "database_name": "db_d365opsuae_dxperts_ax_20240803_02262986_0bbb",
+          "object_id": 1655062890,
+          "schema_name": "dbo",
+          "name": "FINANCIALREPORTINGSCENARIOBUDGET",
+          "display_name": "FinancialReportingScenarioBudget",
+          "kind": "VIEW",
+          "definition": "CREATE VIEW [DBO].[FINANCIALREPORTINGSCENARIOBUDGET] AS SELECT T1.RECID AS ID, T1.DATAAREAID AS DATAAREAID, T1.PARTITION AS PARTITION, T1.RECID AS RECID, T2.PARTITION AS PARTITION#2, T3.PRIMARYFORLEGALENTITY AS ORGANIZATIONID, T3.PARTITION AS PARTITION#3, (CAST ((0) AS INT)) AS ISDEFAULT, (CAST ((T1.MODELID) AS NVARCHAR(50))) AS NAME, (CAST ((T1.TXT) AS NVARCHAR(50))) AS DESCRIPTION, (CAST ((1) AS INT)) AS SCENARIOTYPE, (CAST ((T3.BUDGETEXCHANGERATETYPE) AS BIGINT)) AS EXCHANGERATETYPEID FROM BUDGETMODEL T1 CROSS JOIN DIMATTRIBUTECOMPANYINFO T2 CROSS JOIN LEDGER T3 WHERE((( T1.TYPE  =  0)  AND (( T1.DATAAREAID  =  T2.VALUE)  AND ( T1.PARTITION  =  T2.PARTITION)))  AND (( T2.RECID  =  T3.PRIMARYFORLEGALENTITY)  AND ( T2.PARTITION  =  T3.PARTITION)))",
+          "is_encrypted": 0,
+          "source_file": "definitions.jsonl",
+          "source_hash": "2a716d78288734f3519a23b54bf01f9fd01fd59cd9ed0603c1ef1b2c808af592"
+        },
+        "columns": [
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 1,
+            "name": "ID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 2,
+            "name": "DATAAREAID",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 3,
+            "name": "PARTITION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 4,
+            "name": "RECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 5,
+            "name": "PARTITION#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 6,
+            "name": "ORGANIZATIONID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 7,
+            "name": "PARTITION#3",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 8,
+            "name": "ISDEFAULT",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 9,
+            "name": "NAME",
+            "data_type": "nvarchar",
+            "max_length": "100",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 10,
+            "name": "DESCRIPTION",
+            "data_type": "nvarchar",
+            "max_length": "100",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 11,
+            "name": "SCENARIOTYPE",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:1655062890",
+            "column_id": 12,
+            "name": "EXCHANGERATETYPEID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          }
+        ],
+        "dependencies": [
+          {
+            "id": 21922,
+            "source_key": "live49:1655062890",
+            "target_key": "live49:2116358754",
+            "referenced_schema": null,
+            "referenced_name": "BUDGETMODEL",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 21923,
+            "source_key": "live49:1655062890",
+            "target_key": "live49:1945055823",
+            "referenced_schema": null,
+            "referenced_name": "DIMATTRIBUTECOMPANYINFO",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 21924,
+            "source_key": "live49:1655062890",
+            "target_key": "live49:383548650",
+            "referenced_schema": null,
+            "referenced_name": "LEDGER",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          }
+        ],
+        "indexes": []
+      }
+    }
+  ],
+  "official_sources_consulted_2026_11_05": [
+    "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/financial/activate-financial-dimensions",
+    "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/financial/dimension-defaulting",
+    "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/analytics/er-functions-other-convertcurrency",
+    "https://learn.microsoft.com/en-us/dynamics365/finance/accounts-payable/vendor-invoice-dates",
+    "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/financial/create-exchange-rate-providers"
+  ],
+  "target_schema_sha256": "734f53d2e2d4d8b58042a79ac544a452ac5cde7dbe4ca90c33a17c6a1b126cd9",
+  "runtime_validated": false,
+  "business_reconciled": false,
+  "current_implementation_note": "User-selected simple currency-only ExchRate lookup and missing/zero-rate=1 fallback. Ledger/company engine records are background research, not current query dependencies. Original source records are unchanged."
+}

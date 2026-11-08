@@ -1,0 +1,6 @@
+-- vendor-invoice-lines: CHECK PLAN, NOT RUN
+-- Blocked until the Fabric schema, line identity and selected fields are confirmed.
+-- Check source and enriched row counts by Company; line identity duplicates;
+-- header-key uniqueness and unmatched headers; enum uniqueness/unmatched codes
+-- when used; reconcile quantities and amounts with F&O in the correct scope.
+-- Review vendor-invoice-lines.mapping.md before drafting executable checks.

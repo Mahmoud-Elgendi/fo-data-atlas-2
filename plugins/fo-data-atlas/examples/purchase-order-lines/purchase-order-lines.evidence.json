@@ -1,0 +1,650 @@
+{
+  "purpose": "Original captured SQL evidence for the three-part purchase header/line predicate. Not a target deployment bundle.",
+  "records": [
+    {
+      "source_id": "sql-application-catalog-20261023",
+      "packed_evidence_id": "13495b4f7143c757d7bbca4d0dbaa358",
+      "packed_sha256": "7a1ba2a541f4d3398d8b621923860d7bb50d8c8b59367fd6e270238d2110a495",
+      "content": {
+        "object": {
+          "id": "live49:629925601",
+          "database_name": "db_d365opsuae_dxperts_ax_20240803_02262986_0bbb",
+          "object_id": 629925601,
+          "schema_name": "dbo",
+          "name": "PURCHASEORDERFINTAGRULESIMULATEVIEW",
+          "display_name": "PURCHASEORDERFINTAGRULESIMULATEVIEW",
+          "kind": "VIEW",
+          "definition": "CREATE VIEW [DBO].[PURCHASEORDERFINTAGRULESIMULATEVIEW] AS SELECT T1.PURCHID AS HEADERDOCUMENTNUMBER, T1.PURCHID AS HEADERCOL1, T1.ORDERACCOUNT AS HEADERCOL2, T1.INVOICEACCOUNT AS HEADERCOL3, T1.PURCHASETYPE AS HEADERCOL4, T1.FINTAG AS HEADERCOL5, T1.DATAAREAID AS DATAAREAID, T1.PARTITION AS PARTITION, 1010 AS RECID, T2.PURCHID AS LINESDOCUMENTNUMBER, T2.LINENUMBER AS LINENUMBER, T2.ITEMID AS LINECOL1, T2.PURCHQTY AS LINECOL4, T2.FINTAG AS LINECOL6, T2.DATAAREAID AS DATAAREAID#2, T2.PARTITION AS PARTITION#2, T3.DISPLAYVALUE AS LINECOL5, T3.PARTITION AS PARTITION#3, T4.INVENTSITEID AS LINECOL2, T4.INVENTLOCATIONID AS LINECOL3, T4.DATAAREAID AS DATAAREAID#4, T4.PARTITION AS PARTITION#4 FROM PURCHTABLE T1 LEFT OUTER JOIN PURCHLINE T2 ON((( T1.PURCHID  =  T2.PURCHID)  AND ( T1.DATAAREAID  =  T2.DATAAREAID))  AND ( T1.PARTITION  =  T2.PARTITION)) LEFT OUTER JOIN DIMENSIONATTRIBUTEVALUECOMBINATION T3 ON(( T2.LEDGERDIMENSION  =  T3.RECID)  AND ( T2.PARTITION  =  T3.PARTITION)) LEFT OUTER JOIN INVENTDIM T4 ON((( T2.INVENTDIMID  =  T4.INVENTDIMID)  AND ( T2.DATAAREAID  =  T4.DATAAREAID))  AND ( T2.PARTITION  =  T4.PARTITION)) WHERE( T1.PURCHSTATUS  =  1) GROUP BY T1.PURCHID, T1.ORDERACCOUNT, T1.INVOICEACCOUNT, T1.PURCHASETYPE, T1.FINTAG, T1.DATAAREAID, T1.PARTITION, T2.LINENUMBER, T2.PURCHID, T2.ITEMID, T2.PURCHQTY, T2.FINTAG, T2.DATAAREAID, T2.PARTITION, T3.DISPLAYVALUE, T3.PARTITION, T4.INVENTSITEID, T4.INVENTLOCATIONID, T4.DATAAREAID, T4.PARTITION",
+          "is_encrypted": 0,
+          "source_file": "definitions.jsonl",
+          "source_hash": "2a716d78288734f3519a23b54bf01f9fd01fd59cd9ed0603c1ef1b2c808af592"
+        },
+        "columns": [
+          {
+            "object_key": "live49:629925601",
+            "column_id": 1,
+            "name": "HEADERDOCUMENTNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 2,
+            "name": "HEADERCOL1",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 3,
+            "name": "HEADERCOL2",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 4,
+            "name": "HEADERCOL3",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 5,
+            "name": "HEADERCOL4",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 6,
+            "name": "HEADERCOL5",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 7,
+            "name": "DATAAREAID",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 8,
+            "name": "PARTITION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 9,
+            "name": "RECID",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 10,
+            "name": "LINESDOCUMENTNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 11,
+            "name": "LINENUMBER",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 12,
+            "name": "LINECOL1",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 13,
+            "name": "LINECOL4",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 14,
+            "name": "LINECOL6",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 15,
+            "name": "DATAAREAID#2",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 16,
+            "name": "PARTITION#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 17,
+            "name": "LINECOL5",
+            "data_type": "nvarchar",
+            "max_length": "1000",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 18,
+            "name": "PARTITION#3",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 19,
+            "name": "LINECOL2",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 20,
+            "name": "LINECOL3",
+            "data_type": "nvarchar",
+            "max_length": "20",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 21,
+            "name": "DATAAREAID#4",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "1"
+          },
+          {
+            "object_key": "live49:629925601",
+            "column_id": 22,
+            "name": "PARTITION#4",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "1"
+          }
+        ],
+        "dependencies": [
+          {
+            "id": 8476,
+            "source_key": "live49:629925601",
+            "target_key": "live49:1639676889",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONATTRIBUTEVALUECOMBINATION",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 8477,
+            "source_key": "live49:629925601",
+            "target_key": "live49:305188633",
+            "referenced_schema": null,
+            "referenced_name": "INVENTDIM",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 8478,
+            "source_key": "live49:629925601",
+            "target_key": "live49:702169797",
+            "referenced_schema": null,
+            "referenced_name": "PURCHLINE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 8479,
+            "source_key": "live49:629925601",
+            "target_key": "live49:1368092360",
+            "referenced_schema": null,
+            "referenced_name": "PURCHTABLE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          }
+        ],
+        "indexes": []
+      }
+    },
+    {
+      "source_id": "sql-application-catalog-20261023",
+      "packed_evidence_id": "9337554ee6f42276c6600b22690fd89f",
+      "packed_sha256": "16a70f1a57222f34a198d935d7410a19cbada03ddaaf332ff2d463d58b49842c",
+      "content": {
+        "object": {
+          "id": "live49:928668164",
+          "database_name": "db_d365opsuae_dxperts_ax_20240803_02262986_0bbb",
+          "object_id": 928668164,
+          "schema_name": "dbo",
+          "name": "PURCHAPPROVALACCOUNTINGDISTRIBUTIONENTITY",
+          "display_name": "PurchApprovalAccountingDistributionEntity",
+          "kind": "VIEW",
+          "definition": "CREATE VIEW [DBO].[PURCHAPPROVALACCOUNTINGDISTRIBUTIONENTITY] AS SELECT T1.SOURCEDOCUMENTLINE AS SOURCEDOCUMENTLINE, T1.NUMBER_ AS DISTRIBUTIONNUMBER, T1.TRANSACTIONCURRENCY AS TRANSACTIONCURRENCY, T1.TRANSACTIONCURRENCYAMOUNT AS TRANSACTIONCURRENCYAMOUNT, T1.RECVERSION AS RECVERSION, T1.PARTITION AS PARTITION, T1.RECID AS RECID, T2.DATAAREAID AS LEGALENTITY, T2.PURCHID AS PURCHASEORDERNUMBER, T2.LINENUMBER AS LINENUMBER, T2.ITEMID AS ITEMNUMBER, T2.RECVERSION AS RECVERSION#2, T2.PARTITION AS PARTITION#2, T2.RECID AS RECID#2, T3.DISPLAYVALUE AS LEDGERACCOUNT, T3.RECVERSION AS RECVERSION#5, T3.PARTITION AS PARTITION#5, T3.RECID AS RECID#5, T4.RECVERSION AS RECVERSION#3, T4.PARTITION AS PARTITION#3, T4.RECID AS RECID#3, T5.USERID AS APPROVALUSER, T5.RECID AS WORKITEMRECID, T5.RECVERSION AS RECVERSION#4, T5.PARTITION AS PARTITION#4, T5.RECID AS RECID#4 FROM ACCOUNTINGDISTRIBUTION T1 CROSS JOIN PURCHLINE T2 CROSS JOIN DIMENSIONATTRIBUTEVALUECOMBINATION T3 CROSS JOIN PURCHTABLE T4 CROSS JOIN WORKFLOWWORKITEMTABLE T5 WHERE((((( T1.SOURCEDOCUMENTLINE  =  T2.SOURCEDOCUMENTLINE)  AND ( T1.PARTITION  =  T2.PARTITION))  AND ((( T2.PURCHID  =  T4.PURCHID)  AND ( T2.DATAAREAID  =  T4.DATAAREAID))  AND ( T2.PARTITION  =  T4.PARTITION)))  AND (((( T5.STATUS  =  0)  AND ((( T5.TYPE  =  0)  OR ( T5.TYPE  =  3))  OR ( T5.TYPE  =  4)))  AND ( T5.ISCLAIMED  =  1))  AND ((( T5.REFTABLEID  =  9669)  AND ( T4.PARTITION  =  T5.PARTITION))  AND (( T4.RECID  =  T5.REFRECID)  AND ( T4.PARTITION  =  T5.PARTITION)))))  AND (( T1.LEDGERDIMENSION  =  T3.RECID)  AND ( T1.PARTITION  =  T3.PARTITION)))",
+          "is_encrypted": 0,
+          "source_file": "definitions.jsonl",
+          "source_hash": "2a716d78288734f3519a23b54bf01f9fd01fd59cd9ed0603c1ef1b2c808af592"
+        },
+        "columns": [
+          {
+            "object_key": "live49:928668164",
+            "column_id": 1,
+            "name": "SOURCEDOCUMENTLINE",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 2,
+            "name": "DISTRIBUTIONNUMBER",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 3,
+            "name": "TRANSACTIONCURRENCY",
+            "data_type": "nvarchar",
+            "max_length": "6",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 4,
+            "name": "TRANSACTIONCURRENCYAMOUNT",
+            "data_type": "numeric",
+            "max_length": "17",
+            "precision": "32",
+            "scale": "6",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 5,
+            "name": "RECVERSION",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 6,
+            "name": "PARTITION",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 7,
+            "name": "RECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 8,
+            "name": "LEGALENTITY",
+            "data_type": "nvarchar",
+            "max_length": "8",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 9,
+            "name": "PURCHASEORDERNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "200",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 10,
+            "name": "LINENUMBER",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 11,
+            "name": "ITEMNUMBER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 12,
+            "name": "RECVERSION#2",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 13,
+            "name": "PARTITION#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 14,
+            "name": "RECID#2",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 15,
+            "name": "LEDGERACCOUNT",
+            "data_type": "nvarchar",
+            "max_length": "1000",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 16,
+            "name": "RECVERSION#5",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 17,
+            "name": "PARTITION#5",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 18,
+            "name": "RECID#5",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 19,
+            "name": "RECVERSION#3",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 20,
+            "name": "PARTITION#3",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 21,
+            "name": "RECID#3",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 22,
+            "name": "APPROVALUSER",
+            "data_type": "nvarchar",
+            "max_length": "40",
+            "precision": "0",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 23,
+            "name": "WORKITEMRECID",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 24,
+            "name": "RECVERSION#4",
+            "data_type": "int",
+            "max_length": "4",
+            "precision": "10",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 25,
+            "name": "PARTITION#4",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          },
+          {
+            "object_key": "live49:928668164",
+            "column_id": 26,
+            "name": "RECID#4",
+            "data_type": "bigint",
+            "max_length": "8",
+            "precision": "19",
+            "scale": "0",
+            "is_nullable": "0"
+          }
+        ],
+        "dependencies": [
+          {
+            "id": 12383,
+            "source_key": "live49:928668164",
+            "target_key": "live49:187720317",
+            "referenced_schema": null,
+            "referenced_name": "ACCOUNTINGDISTRIBUTION",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 12384,
+            "source_key": "live49:928668164",
+            "target_key": "live49:1639676889",
+            "referenced_schema": null,
+            "referenced_name": "DIMENSIONATTRIBUTEVALUECOMBINATION",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 12385,
+            "source_key": "live49:928668164",
+            "target_key": "live49:702169797",
+            "referenced_schema": null,
+            "referenced_name": "PURCHLINE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 12386,
+            "source_key": "live49:928668164",
+            "target_key": "live49:1368092360",
+            "referenced_schema": null,
+            "referenced_name": "PURCHTABLE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          },
+          {
+            "id": 12387,
+            "source_key": "live49:928668164",
+            "target_key": "live49:1970978248",
+            "referenced_schema": null,
+            "referenced_name": "WORKFLOWWORKITEMTABLE",
+            "referenced_database": null,
+            "referenced_server": null,
+            "referenced_minor_id": 0,
+            "is_ambiguous": 0,
+            "source_file": "dependencies.jsonl"
+          }
+        ],
+        "indexes": []
+      }
+    }
+  ],
+  "analytical_changes": [
+    "Drive from retained purchline rows and LEFT JOIN purchtable.",
+    "Retain the evidenced purchid/dataareaid/partition equalities.",
+    "Do not inherit unrelated source-view status/type/workflow filters, aggregation or synthetic identifiers."
+  ],
+  "runtime_validated": false,
+  "business_reconciled": false
+}

@@ -1,0 +1,5 @@
+-- vendor-invoice-lines
+-- BLOCKED DRAFT: confirm actual Fabric schema and required fields first.
+-- Driving source lead: VendInvoiceTrans; LEFT JOIN header lead: VendInvoiceJour.
+-- See vendor-invoice-lines.mapping.md for evidence, scope and approval requirements.
+-- No executable target query is emitted by this starting template.

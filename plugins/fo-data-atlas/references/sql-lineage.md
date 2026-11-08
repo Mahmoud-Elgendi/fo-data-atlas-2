@@ -1,0 +1,16 @@
+# SQL behind a view and its underlying objects
+
+Use this workflow for exported view SQL, source-object explanations and dependency questions. It does not require a Fabric schema export unless the user also requests a new or adapted Fabric query.
+
+1. Select the SQL snapshot explicitly. Use project metadata_sources if configured, otherwise list `atlas.py sources` and clarify the environment once. Preserve source, database, schema and evidence ID. Do not combine same-named objects from different snapshots.
+2. Search: `python PACK/scripts/atlas.py search "ViewName" --source SOURCE --kind SQL_OBJECT`. Read the selected record with `show ID`; original SQL is in its object.definition. AxView XML is additional declaration evidence, not a replacement for exported SQL.
+3. Inspect: `python PACK/scripts/sql_lineage.py ID --pack PACK`. It returns the definition, nested view/function/table references, ordering, hashes and gaps from the exported dependency catalog. Default bounds are depth 25 and 300 objects; bounded/truncated results are explicitly incomplete.
+4. First response: explain the selected view, show its SQL, and list direct underlying views/tables plus a compact nested outline when helpful. Distinguish code-supported facts from interpretation. Cite snapshot/evidence/hash and report unresolved, ambiguous, cyclic or qualified references. Never invent joins from graph edges.
+5. Ask one short question: **Would you like the SQL for the underlying views too?** If the user already requested the full chain, provide it without asking again. Include required functions and identify physical tables separately; a table with no module definition is not a missing view.
+6. Save the root definition and readable lineage: `python PACK/scripts/sql_lineage.py ID --pack PACK --output NEW_FOLDER`. After the full-chain request, add `--include-dependencies` to export separate SQL files in dependency-first order, plus lineage.json, lineage.md and definitions-index.json. Existing directories are preserved; choose a new descriptive folder for a new export. Root and underlying SQL filenames contain the object name and evidence identity.
+
+SQL files preserve the exact exported definition text encoded as UTF-8. Read lineage.md/index alongside them: source SQL is not automatically ready for Fabric or safe to deploy over an existing object. Report required physical tables, functions, context behavior and incomplete evidence. Definitions with cycles/gaps are still useful evidence; do not describe them as a complete runnable deployment.
+
+For Fabric-ready analytical SQL, compare all physical dependencies with the recipient's actual schema, confirm grain/fields and produce a separate descriptively named draft with checks. Do not rewrite original extracted definitions to satisfy generated-query style rules. Missing schema, source-context functions, temp tables, unsupported functions and runtime X++ must remain explicit blockers or assumptions.
+
+All metadata in the current offline pack remains available through atlas.py; this inspector specifically follows packed SQL_OBJECT catalog edges. Dynamic SQL, runtime X++ and effective extension merging can introduce dependencies outside that catalog. Original definition availability is not runtime or business validation.

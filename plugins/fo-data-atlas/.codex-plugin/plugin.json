@@ -1,0 +1,11 @@
+{
+  "name": "fo-data-atlas",
+  "version": "0.2.0",
+  "description": "Evidence-based D365 F&O analytical SQL for Fabric using offline metadata.",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "F&O Data Atlas",
+    "shortDescription": "Build Fabric SQL from offline F&O evidence",
+    "defaultPrompt": "Prepare a wide F&O dataset using the project schema and Data Atlas evidence."
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "fo-data-atlas",
+  "version": "0.2.0",
+  "description": "Evidence-based D365 F&O analytical SQL for Fabric using offline metadata.",
+  "author": {"name": "365 Xperts"},
+  "skills": "./skills/"
+}

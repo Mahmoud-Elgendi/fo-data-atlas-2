@@ -1,0 +1,5 @@
+-- product-receipt-lines
+-- BLOCKED DRAFT: confirm actual Fabric schema and required fields first.
+-- Driving source lead: VendPackingSlipTrans; LEFT JOIN header lead: VendPackingSlipJour.
+-- See product-receipt-lines.mapping.md for evidence, scope and approval requirements.
+-- No executable target query is emitted by this starting template.

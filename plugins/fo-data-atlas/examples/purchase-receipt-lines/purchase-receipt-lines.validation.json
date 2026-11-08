@@ -1,0 +1,73 @@
+{
+  "issues": [
+    "Review unqualified source or CTE: ExchRate"
+  ],
+  "sources": [
+    {
+      "schema": "dbo",
+      "table": "exchangeratecurrencypair",
+      "alias": "exch",
+      "depth": 1,
+      "left_join": false
+    },
+    {
+      "schema": "dbo",
+      "table": "exchangerate",
+      "alias": "x",
+      "depth": 1,
+      "left_join": false
+    },
+    {
+      "schema": "dbo",
+      "table": "exchangeratetype",
+      "alias": "exchrt",
+      "depth": 1,
+      "left_join": false
+    },
+    {
+      "schema": "dbo",
+      "table": "vendpackingsliptrans",
+      "alias": "r",
+      "depth": 0,
+      "left_join": false
+    },
+    {
+      "schema": "dbo",
+      "table": "vendpackingslipjour",
+      "alias": "h",
+      "depth": 0,
+      "left_join": true
+    },
+    {
+      "schema": "dbo",
+      "table": "dimensionattributevalueset",
+      "alias": "dim",
+      "depth": 0,
+      "left_join": true
+    },
+    {
+      "schema": "dbo",
+      "table": "inventdim",
+      "alias": "idim",
+      "depth": 0,
+      "left_join": true
+    },
+    {
+      "schema": "dbo",
+      "table": "purchline",
+      "alias": "p",
+      "depth": 0,
+      "left_join": true
+    }
+  ],
+  "passed": false,
+  "scope": "Bounded checks for schema-qualified sources and qualified columns; CTEs/complex scopes need review. Not a SQL parser or business validation.",
+  "runtime_validated": false,
+  "business_reconciled": false,
+  "sql_sha256": "94a99e9652df4d0a3c657f4f806a09f2b97077b29b10bf3f4d8a158bbf9a4513",
+  "manual_cte_review": {
+    "reviewed": true,
+    "basis": "ExchRate is the declared CTE; its two output aliases and source joins retained from owner-reviewed SQL. Bounded linter does not parse CTE outputs."
+  },
+  "sample_schema_only": true
+}
