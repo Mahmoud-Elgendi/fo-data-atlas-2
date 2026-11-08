@@ -263,6 +263,17 @@ def main(argv=None):
         result = prepare(ROOT, base, host, **options)
         if catalog: result['metadata_profile']=profile
         result["scope"] = scope
+        result['start_here'] = {}
+        if host in {'codex', 'both'}:
+            result['start_here']['codex'] = {
+                'setup': '$fo-atlas-setup\nSet up this Fabric project. Guide me one step at a time.',
+                'view': '$fo-atlas-query\nShow the SQL behind CustCustomerV3Entity and list its underlying views and tables.',
+                'query': '$fo-atlas-query\nCreate purchase-order-lines. Suggest the fields first.'}
+        if host in {'claude', 'both'}:
+            result['start_here']['claude'] = {
+                'setup': '/fo-data-atlas:fo-atlas-setup\nSet up this Fabric project. Guide me one step at a time.',
+                'view': '/fo-data-atlas:fo-atlas-query\nShow the SQL behind CustCustomerV3Entity and list its underlying views and tables.',
+                'query': '/fo-data-atlas:fo-atlas-query\nCreate purchase-order-lines. Suggest the fields first.'}
         if "claude_marketplace" in result:
             result["claude_commands"] = [
                 ["claude", "plugin", "marketplace", "add", result["claude_marketplace"]],
@@ -282,6 +293,14 @@ def main(argv=None):
                     print("  " + " ".join('"' + value + '"' if any(c in value for c in ' &|<>^()%') else value for value in command))
                 print("  If this private marketplace is already registered at an older path,")
                 print("  remove that old registration before adding the new path.")
+            print("\nSTART HERE - after activating the plugin, open your project and a new chat.")
+            for tool, prompts in result['start_here'].items():
+                print('\n  ' + {'codex': 'Codex', 'claude': 'Claude Code'}[tool] + ' - paste this to set up your Fabric project:')
+                for line in prompts['setup'].splitlines(): print('    ' + line)
+                print('  Or inspect an exported view immediately (no Fabric CSV needed):')
+                for line in prompts['view'].splitlines(): print('    ' + line)
+                print('  After project setup, request a dataset:')
+                for line in prompts['query'].splitlines(): print('    ' + line)
             print("\nYour schema and reporting rules stay with each Fabric project.")
         else: print(json.dumps(result, indent=2))
         return 0

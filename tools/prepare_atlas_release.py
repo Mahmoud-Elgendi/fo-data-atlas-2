@@ -31,11 +31,15 @@ def prepare(pack, output, project=ROOT):
         target = output/'tools'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tools'/name,target)
-    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py'):
+    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py','test_atlas_cli.py','test_atlas_cli.cjs'):
         target=output/'tests'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tests'/name,target)
     shutil.copytree(documentation,output/('docs/release-'+version))
+    launcher=json.loads((project/'tools/atlas-npx-package.json').read_text(encoding='utf-8'))
+    if launcher['version'] != version: raise ValueError('npm launcher and plugin versions differ.')
+    (output/'package.json').write_text(json.dumps(launcher,indent=2)+'\n',encoding='utf-8')
+    shutil.copyfile(project/'tools/atlas-npx-package.json',output/'tools/atlas-npx-package.json')
     shutil.copyfile(pack/'RELEASE-NOTES.md',output/'release-notes.md')
     (output/'.gitignore').write_text('**/__pycache__/\n*.pyc\n*.sqlite*\n*.zip\n**/dist/\ntest-evidence/\n**/reference-pack*.json\n',encoding='utf-8')
     text='''# F&O Data Atlas
@@ -47,7 +51,16 @@ The full offline database is distributed as a versioned GitHub Release asset.
 
 ## Install
 
-Use Python 3.10+ and authenticated GitHub CLI with read access to this repository:
+Use Node.js 22+, Git, Python 3.10+ and authenticated GitHub CLI with read access.
+One-time authentication: `gh auth login`, then `gh auth setup-git`.
+After this version is published, run from your intended Fabric project:
+
+```powershell
+npx --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#vVERSION" fo-data-atlas
+```
+
+This is a private Git-backed command, not an npm registry publication or skills-add installation.
+For an extracted source package, Node.js/Git are optional; use the Python route:
 
 ```powershell
 python plugins/fo-data-atlas/scripts/github_release.py install
@@ -73,7 +86,7 @@ The source checkout alone intentionally lacks references/atlas.sqlite; obtain th
 complete release package before attempting metadata queries or offline setup.
 Metadata baselines and plugin versions are separate. No new .49 collection is claimed.
 '''
-    text=text.replace('release-0.2.0','release-'+version)
+    text=text.replace('release-0.2.0','release-'+version).replace('vVERSION','v'+version)
     (output/'README.md').write_text(text,encoding='utf-8')
     (output/'.gitattributes').write_text('* -text\n',encoding='ascii')
     files=[p for p in output.rglob('*') if p.is_file()]

@@ -1,4 +1,6 @@
-# Setup — 0.3.0
+# Setup — 0.4.0
+
+For a new PC, see [first use](first-use.md) for the optional single-command route and ready-to-paste prompts. The 0.4.0 remote command requires publication; Python-only setup remains supported.
 
 ## First installation
 

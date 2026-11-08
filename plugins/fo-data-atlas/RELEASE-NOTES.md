@@ -1,6 +1,15 @@
-# F&O Data Atlas 0.3.0
+# F&O Data Atlas 0.4.0
 
-Prepared 8 November 2026; publication/native activation are separate checks.
+Local candidate, 8 November 2026. Not yet published.
+
+- Adds a buildless private Git-backed npx entrance for install, update and check. It delegates to the existing verified Python installer; no npm registry publication, dependencies or lifecycle scripts.
+- Prints host-specific START HERE prompts after setup and includes them in JSON output.
+- Documents another-PC prerequisites, authentication, host activation and first use.
+- Reuses exact 0.3.0 metadata assets/hashes; earlier published files remain unchanged.
+
+Remote private npx transfer and native host activation require separate verification.
+
+## Retained from 0.3.0
 
 - Separates the small tools package from independently versioned, shared metadata cache. Compatible tools-only updates do not redownload unchanged metadata.
 - Adds Core (default) and Full offline selection. Both retain 447,389 object identities; Core has 204,438 readable document identities and Full has all originals. Missing evidence is explicit.

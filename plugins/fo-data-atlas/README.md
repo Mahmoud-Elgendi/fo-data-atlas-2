@@ -1,8 +1,10 @@
 # F&O Data Atlas — private AI plugin
 
-Version 0.3.0. Offline F&O metadata exploration, exported view SQL/dependencies and Fabric query drafting for Codex and Claude Code. No VM, operational database or Atlas app connection is needed after the complete package is installed.
+Version 0.4.0 (local candidate). Offline F&O metadata exploration, exported view SQL/dependencies and Fabric query drafting for Codex and Claude Code. No VM, operational database or Atlas app connection is needed after the complete package is installed.
 
 ## Install
+
+The optional single-command route and first chat prompts are in [first installation and first use](references/first-use.md). The remote command requires publication of the 0.4.0 source/tag and tools release. Python-only installation remains available below.
 
 Online bootstrap requires Python 3.10+ and authenticated GitHub CLI with access to Mahmoud-Elgendi/fo-data-atlas-2. Download scripts/github_release.py from that repository or use its copy in this package, then run:
 
@@ -12,7 +14,7 @@ python scripts/github_release.py install
 
 This downloads and verifies the small tools package, then opens the branded setup wizard by Mahmoud Elgendi. Choose Core metadata (default) or Full offline; verified metadata is cached once per machine. Choose the AI tool and global/current-project scope; confirm with [Y/n]. Follow the displayed host activation steps. For offline installation, provide the matching local metadata pack with --local-pack; uncached profiles otherwise need a download. Native host activation must be checked separately.
 
-Source checkouts do not include the large offline database; the GitHub release asset supplies it. Version 0.3.0 is prepared locally until its release is actually published; live GitHub download/host activation are separate verification steps.
+Source checkouts do not include the large offline database; GitHub release assets supply it. Version 0.3.0 publication, tools download and setup were confirmed by the owner. Version 0.4.0 is a local candidate; private npx transfer and native host activation require separate checks.
 
 ## Ask
 

@@ -7,7 +7,16 @@ The full offline database is distributed as a versioned GitHub Release asset.
 
 ## Install
 
-Use Python 3.10+ and authenticated GitHub CLI with read access to this repository:
+Use Node.js 22+, Git, Python 3.10+ and authenticated GitHub CLI with read access.
+One-time authentication: `gh auth login`, then `gh auth setup-git`.
+After this version is published, run from your intended Fabric project:
+
+```powershell
+npx --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.4.0" fo-data-atlas
+```
+
+This is a private Git-backed command, not an npm registry publication or skills-add installation.
+For an extracted source package, Node.js/Git are optional; use the Python route:
 
 ```powershell
 python plugins/fo-data-atlas/scripts/github_release.py install
@@ -19,8 +28,8 @@ Installed evidence works offline; uncached originals require the Full profile.
 Use the same command to update; existing project settings and previous versions stay.
 
 See [plugin guide](plugins/fo-data-atlas/README.md),
-[release notes](release-notes.md), [release plan](docs/release-0.3.0/PLAN.md)
-and [terminal workflow](docs/release-0.3.0/TERMINAL.md).
+[release notes](release-notes.md), [release plan](docs/release-0.4.0/PLAN.md)
+and [terminal workflow](docs/release-0.4.0/TERMINAL.md).
 
 ## Test source
 
