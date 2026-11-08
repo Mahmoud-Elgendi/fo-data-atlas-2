@@ -233,13 +233,19 @@ class AtlasPluginTests(unittest.TestCase):
     def test_setup_accepts_preview_and_keeps_scripted_json_mode(self):
         result = {"package": str(self.root / "package"), "next_steps": ["Activate the plugin."]}
         project = self.root / "project"
-        with redirect_stdout(io.StringIO()), patch("builtins.input", side_effect=["3", "1", str(project), ""]), patch('metadata_cache.acquire',return_value=self.root/'fixture-metadata'), patch.object(atlas_install, "prepare", return_value=dict(result)) as prepare:
+        with redirect_stdout(io.StringIO()) as preview, patch("builtins.input", side_effect=["3", "1", str(project), ""]), patch('metadata_cache.acquire',return_value=self.root/'fixture-metadata'), patch.object(atlas_install, "prepare", return_value=dict(result)) as prepare:
             self.assertEqual(atlas_install.main(['--metadata-profile','core']), 0)
         self.assertEqual(prepare.call_args.args[1:], (project.resolve(), "both"))
         self.assertTrue(prepare.call_args.kwargs["allow_upgrade"])
+        self.assertIn('START HERE', preview.getvalue())
+        self.assertIn('$fo-atlas-setup', preview.getvalue())
+        self.assertIn('/fo-data-atlas:fo-atlas-query', preview.getvalue())
         with redirect_stdout(io.StringIO()) as output, patch("builtins.input", side_effect=AssertionError("Non-interactive setup prompted")), patch('metadata_cache.acquire',return_value=self.root/'fixture-metadata'), patch.object(atlas_install, "prepare", return_value=dict(result)):
             self.assertEqual(atlas_install.main(["--host", "codex", "--scope", "project", "--project", str(project)]), 0)
-        self.assertEqual(json.loads(output.getvalue())["scope"], "project")
+        scripted = json.loads(output.getvalue())
+        self.assertEqual(scripted["scope"], "project")
+        self.assertEqual(set(scripted['start_here']), {'codex'})
+        self.assertIn('Suggest the fields first', scripted['start_here']['codex']['query'])
 
     def test_setup_managed_upgrade_keeps_previous_files(self):
         import shutil

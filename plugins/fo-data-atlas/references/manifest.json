@@ -1,0 +1,10 @@
+{
+  "documents": 447389,
+  "unique_contents": 395819,
+  "sources": 11,
+  "generated_utc": "2026-11-04T20:10:46.720929+00:00",
+  "runtime_validated": false,
+  "business_reconciled": false,
+  "search_coverage": "Object names and bounded declared field/reference tokens, not exhaustive full-text or effective-extension merging.",
+  "sqlite_sha256": "8a63169e90b0c2f76a95f08bcb726efbc1cfa8fbd48bf83cf6eba24e15c6ea18"
+}

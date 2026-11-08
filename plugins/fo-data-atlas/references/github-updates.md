@@ -1,4 +1,6 @@
-# GitHub install and offline updates — 0.3.0
+# GitHub install and offline updates — 0.4.0
+
+The optional Git-backed npx entrance is described in [first use](first-use.md). It delegates to this same installer/cache. It is separate from skills-add installation, which does not prepare Atlas package-level helpers and metadata.
 
 Repository: https://github.com/Mahmoud-Elgendi/fo-data-atlas-2. The 0.2.0 release remains immutable; version 0.3 separates small tools from Core/Full metadata and fixes long Windows download extraction paths.
 
