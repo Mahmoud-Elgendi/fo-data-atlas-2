@@ -31,7 +31,7 @@ def prepare(pack, output, project=ROOT):
         target = output/'tools'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tools'/name,target)
-    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py','test_atlas_cli.py','test_atlas_cli.cjs'):
+    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py','test_atlas_cli.py','test_atlas_cli.cjs','test_atlas_workflow_templates.py'):
         target=output/'tests'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tests'/name,target)

@@ -11,6 +11,9 @@ Apply these rules to proposed analytical SQL. Keep extracted source definitions 
 - Keep output aliases in business casing. Prefer suitable exported entity field names. If none fit the meaning, propose a name and identify it as authored. Preserve the alias-to-source mapping.
 - Company output is `UPPER(dataareaid) AS Company`, qualifying the physical field when needed. All legal entities are included by default for the three initial purchase datasets; company filtering is optional.
 - Shared tables may have no company column. Establish company, Partition, source/environment and other required key predicates from evidence and actual target columns. Formatting Company does not justify normalizing join keys.
+- If actual key samples establish mixed-case spellings of the same company, document the evidence and normalize both the join and window-partition company expressions consistently. Check cardinality and independently selected results afterward. Case normalization is a target-specific decision, not a universal rule for every identifier.
+- F&O table IDs, SQL Server object_id and document RecId are different identifiers. An index-name prefix is only an unverified table-ID lead. Confirm the recipient's context table ID from explicit target metadata or an authorized read-only check of the replicated tableid column before using a numeric filter.
+- For exact output-name requests, preserve explicitly provided names/order. A legacy view's SELECT * does not reveal its expanded schema or computed key formats. Ask once for headers; if the owner chooses the Fabric raw wildcard instead, document that contract and avoid claiming legacy schema parity. Implement only the requested enrichments.
 
 ## Rows and joins
 
@@ -20,6 +23,7 @@ Apply these rules to proposed analytical SQL. Keep extracted source definitions 
 - Read complete declared constraints and code-supported predicates before proposing joins. Composite/fixed/date/company constraints must remain visible. Extensions are separate evidence until effective behavior is established.
 - Record unverified joins in `<name>.mapping.md`. Include them in `<name>.sql` only after user approval, retaining their unverified label and checks.
 - Check uniqueness on the joined side; a LEFT JOIN can still multiply rows. Classify repeated header amounts as non-additive at line grain.
+- Preserve polymorphic discriminators such as RefTableId/TableId together with RefRecId/RecId and required partition/company scope. A coincidental RecId match does not establish the referenced object type.
 
 ## Status labels
 
@@ -50,3 +54,4 @@ LEFT JOIN (
 - Confirm fields before drafting SQL. Missing requested target fields require a user decision.
 - Deliver descriptively named SQL, mapping and checks files. Label source-supported facts, authored proposals and actual validation results separately.
 - The assistant generates SQL without executing it. Checks begin as not run; runtime/business validation remains false until results support it. Approval, metadata coverage and fixture tests do not establish reconciled business totals.
+- A bounded linter may request manual CTE review even when physical references pass. Record the warning and its review; a linter flag is neither Fabric compilation nor a substitute for target validation. Quote keyword-like aliases, for example [RowCount].

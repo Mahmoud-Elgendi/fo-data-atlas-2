@@ -5,11 +5,13 @@ Private offline D365 F&O metadata and SQL assistant by Mahmoud Elgendi.
 This repository contains the small plugin source, tests and release documentation.
 The full offline database is distributed as a versioned GitHub Release asset.
 
+The published baseline is v0.4.0. This review branch adds unreleased workflow/timesheet templates and pilot guidance; assign a new package version before distributing those changes. See the [review plan](docs/workflow-timesheet-pilot/PLAN.md) and [20 acceptance scenarios](plugins/fo-data-atlas/references/analyst-acceptance.md). Clean-PC installation and native host activation are separate checks, not implied by helper tests.
+
 ## Install
 
 Use Node.js 22+, Git, Python 3.10+ and authenticated GitHub CLI with read access.
 One-time authentication: `gh auth login`, then `gh auth setup-git`.
-After this version is published, run from your intended Fabric project:
+For the published v0.4.0 release, run from your intended Fabric project:
 
 ```powershell
 npx --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.4.0" fo-data-atlas
