@@ -1,0 +1,126 @@
+{
+  "date": "2026-11-12",
+  "branch": "codex/workflow-timesheet-pilot",
+  "base_commit": "9e95d4525cae5e83bdd1fb3b1b3d13d4d129b4d7",
+  "state": "prepared for review; not committed or pushed",
+  "source_tests_passed": 63,
+  "source_package_validation_passed": true,
+  "new_sqlite_template_fixture_cases": 5,
+  "fabric_runtime_validated": false,
+  "business_reconciled": false,
+  "metadata_and_version_files_preserved": [
+    "plugins/fo-data-atlas/metadata-catalog.json",
+    "plugins/fo-data-atlas/.codex-plugin/plugin.json",
+    "plugins/fo-data-atlas/.claude-plugin/plugin.json",
+    "plugins/fo-data-atlas/release-origin.json"
+  ],
+  "sanitized_scan_findings": [],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2259,
+      "sha256": "083eb5f322c695823fa84081c4ffa957748dde29e0c2d06764a05f6ac2914c40"
+    },
+    {
+      "path": "docs/workflow-timesheet-pilot/PLAN.md",
+      "bytes": 1398,
+      "sha256": "7caa8930493c42f3a959ba1cc680772495cad0053c62d278e7af8c0704371d78"
+    },
+    {
+      "path": "docs/workflow-timesheet-pilot/REVIEW.md",
+      "bytes": 2484,
+      "sha256": "24a5f7894bbbe90d6d27d3011d270a5e1aa25cc4119b6eb25abb4daf2f9b84e0"
+    },
+    {
+      "path": "docs/workflow-timesheet-pilot/VERIFICATION.md",
+      "bytes": 2038,
+      "sha256": "9d88543781665d4721ee3376d624ed8dc86eeb4292c0baa5bcf1c42a8ed5fdde"
+    },
+    {
+      "path": "plugins/fo-data-atlas/README.md",
+      "bytes": 4584,
+      "sha256": "5e3dfa1d34d0fb169fef1ed1b82de82f174af6d29c8ee78a6578df700ba814ef"
+    },
+    {
+      "path": "plugins/fo-data-atlas/RELEASE-NOTES.md",
+      "bytes": 2950,
+      "sha256": "a1007fea73afc86113ca633eea66b1bec423ed12f78708253dd066a2d165f464"
+    },
+    {
+      "path": "plugins/fo-data-atlas/examples/timesheet-first-submission-template/timesheet-first-submission.checks.sql",
+      "bytes": 1124,
+      "sha256": "1897fef58b2c2291297d1eeaa3290728da0b45f01e627e02592e71247b8aa422"
+    },
+    {
+      "path": "plugins/fo-data-atlas/examples/timesheet-first-submission-template/timesheet-first-submission.mapping.md",
+      "bytes": 2006,
+      "sha256": "2564d699664481facc8d5ac5fabc7405fb25fdbc17f912356434d3ed49dd4651"
+    },
+    {
+      "path": "plugins/fo-data-atlas/examples/timesheet-first-submission-template/timesheet-first-submission.sql",
+      "bytes": 2960,
+      "sha256": "fb9027485ddb2e8a3bd10ee869c9025160069dcacc0f31ee9f5f54ab96fa96da"
+    },
+    {
+      "path": "plugins/fo-data-atlas/examples/workflow-history-template/workflow-history.checks.sql",
+      "bytes": 708,
+      "sha256": "6cbcfbe361bb77d0303395fcd0add6d4e17e4d9be48921dacff64f54be11a9d0"
+    },
+    {
+      "path": "plugins/fo-data-atlas/examples/workflow-history-template/workflow-history.mapping.md",
+      "bytes": 1000,
+      "sha256": "86b5b876130d1ffd6db4f717aaf5a77a566447b20c79accdc383086b7decfc32"
+    },
+    {
+      "path": "plugins/fo-data-atlas/examples/workflow-history-template/workflow-history.sql",
+      "bytes": 1538,
+      "sha256": "4827482be9641978af8765983949855226eb96db9468558187160dfd65acb382"
+    },
+    {
+      "path": "plugins/fo-data-atlas/references/analyst-acceptance.md",
+      "bytes": 3529,
+      "sha256": "6826c1e4503e7c606bd300f9880053d224bb70571e5f3f138bc7a8205cc4b448"
+    },
+    {
+      "path": "plugins/fo-data-atlas/references/first-use.md",
+      "bytes": 3874,
+      "sha256": "c5e8e329c3efeed307eda1f75850c76787c4569d05003d1c50db009a9490e09a"
+    },
+    {
+      "path": "plugins/fo-data-atlas/references/setup.md",
+      "bytes": 4179,
+      "sha256": "b85c290f74ed01975d6c95b6252b5f08ea36e0e7a60352a073452edecc71996b"
+    },
+    {
+      "path": "plugins/fo-data-atlas/references/sql-rules.md",
+      "bytes": 6169,
+      "sha256": "b63ac4147e639a389acbf02f4cb4a4eaebcfb2193161d1799bed8957f6716f6a"
+    },
+    {
+      "path": "plugins/fo-data-atlas/references/workflow-and-timesheets.md",
+      "bytes": 4976,
+      "sha256": "c9168d84cca2a3c3b7655fd29b1b8229bd409f40b81f04eb2479510916045bee"
+    },
+    {
+      "path": "plugins/fo-data-atlas/skills/fo-atlas-query/SKILL.md",
+      "bytes": 5604,
+      "sha256": "26a4b2aba45150016c82f496cadceb5e99d02d54bb5c06cbaf37c8e3e8e115c0"
+    },
+    {
+      "path": "release-notes.md",
+      "bytes": 2950,
+      "sha256": "a1007fea73afc86113ca633eea66b1bec423ed12f78708253dd066a2d165f464"
+    },
+    {
+      "path": "tests/test_atlas_workflow_templates.py",
+      "bytes": 6908,
+      "sha256": "54b1c2b369fd67a2bc82b718a99577fe38820789e69bb75c54e1e5041dea6481"
+    },
+    {
+      "path": "tools/prepare_atlas_release.py",
+      "bytes": 5870,
+      "sha256": "581a6b9ffc1b886d8ab200fbc7edd969c4ff8ddd74e7b0a74a1cf513e50b2969"
+    }
+  ],
+  "manifest_self_hash_excluded": true
+}

@@ -1,8 +1,8 @@
 # First installation and first use
 
-## Single command (0.4.0 candidate)
+## Single command (published 0.4.0)
 
-This command becomes usable after the owner publishes the 0.4.0 source/tag and tools release. It installs directly from our private GitHub repository, without npm registry publication. It uses npm's [Git package support](https://docs.npmjs.com/cli/v11/commands/npm-install/) and [executable support](https://docs.npmjs.com/cli/v11/commands/npm-exec/).
+Version 0.4.0 is published. This command installs directly from our private GitHub repository, without npm registry publication. Clean-PC transfer and native activation still need recorded acceptance testing. It uses npm's [Git package support](https://docs.npmjs.com/cli/v11/commands/npm-install/) and [executable support](https://docs.npmjs.com/cli/v11/commands/npm-exec/).
 
 On another Windows PC, install your AI tool, Node.js 22+, Git, Python 3.10+ and GitHub CLI. Your GitHub account needs read access to the private repository. Once per PC, run `gh auth login`, then `gh auth setup-git`. Reopen the terminal after installing prerequisites. Git-backed npx acquisition uses Git authentication; release downloads use GitHub CLI authentication. Keep credentials out of command lines and project files.
 

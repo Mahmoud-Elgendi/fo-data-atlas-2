@@ -1,6 +1,15 @@
+# Unreleased review: workflow/timesheet analyst pilot
+
+- Routes retrieval through the installed package first, with explicit missing-profile boundaries.
+- Clarifies workflow grain, first-submission user/date pairing, target IDs, company-case evidence and polymorphic resource joins.
+- Adds configurable event-history and timesheet-first-submission templates, with no tenant-specific IDs, live results or employee values.
+- Adds synthetic logical fixtures and a planned 20-scenario manual analyst acceptance checklist. These do not certify native host loading, clean-PC installation or Fabric business correctness.
+
+Version manifests remain on the published 0.4.0 baseline during review. Assign a new version before packaging this update; published assets and the metadata catalog are unchanged.
+
 # F&O Data Atlas 0.4.0
 
-Local candidate, 8 November 2026. Not yet published.
+Published 8 November 2026; publication and tools ZIP hash verified 12 November 2026. Native activation and clean-PC transfer remain separately tracked.
 
 - Adds a buildless private Git-backed npx entrance for install, update and check. It delegates to the existing verified Python installer; no npm registry publication, dependencies or lifecycle scripts.
 - Prints host-specific START HERE prompts after setup and includes them in JSON output.
