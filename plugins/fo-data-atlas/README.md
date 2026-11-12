@@ -1,10 +1,10 @@
 # F&O Data Atlas — private AI plugin
 
-Published baseline: 0.4.0. This branch contains an unreleased workflow/timesheet review update; choose a new version before distributing changed files. Offline F&O metadata exploration, exported view SQL/dependencies and Fabric query drafting for Codex and Claude Code. No VM, operational database or Atlas app connection is needed for local evidence reads after metadata is installed.
+Version 0.4.1 includes the reviewed workflow/timesheet templates and pilot guidance. Offline F&O metadata exploration, exported view SQL/dependencies and Fabric query drafting for Codex and Claude Code. No VM, operational database or Atlas app connection is needed for local evidence reads after metadata is installed.
 
 ## Install
 
-The optional single-command route and first chat prompts are in [first installation and first use](references/first-use.md). Version 0.4.0 is published. Python-only installation remains available below.
+The optional single-command route and first chat prompts are in [first installation and first use](references/first-use.md). The guide describes the 0.4.1 release workflow. Python-only installation remains available below.
 
 Online bootstrap requires Python 3.10+ and authenticated GitHub CLI with access to Mahmoud-Elgendi/fo-data-atlas-2. Download scripts/github_release.py from that repository or use its copy in this package, then run:
 

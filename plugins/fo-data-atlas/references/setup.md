@@ -1,6 +1,6 @@
-# Setup — 0.4.0
+# Setup — 0.4.1
 
-For a new PC, see [first use](first-use.md) for the optional single-command route and ready-to-paste prompts. Version 0.4.0 is published; clean-PC/native-host acceptance is still separate. Python-only setup remains supported.
+For a new PC, see [first use](first-use.md) for the optional single-command route and ready-to-paste prompts. Confirm the 0.4.1 release is published before remote installation; clean-PC/native-host acceptance is still separate. Python-only setup remains supported.
 
 ## First installation
 

@@ -1,11 +1,11 @@
-# Unreleased review: workflow/timesheet analyst pilot
+# F&O Data Atlas 0.4.1 — 12 November 2026
 
 - Routes retrieval through the installed package first, with explicit missing-profile boundaries.
 - Clarifies workflow grain, first-submission user/date pairing, target IDs, company-case evidence and polymorphic resource joins.
 - Adds configurable event-history and timesheet-first-submission templates, with no tenant-specific IDs, live results or employee values.
 - Adds synthetic logical fixtures and a planned 20-scenario manual analyst acceptance checklist. These do not certify native host loading, clean-PC installation or Fabric business correctness.
 
-Version manifests remain on the published 0.4.0 baseline during review. Assign a new version before packaging this update; published assets and the metadata catalog are unchanged.
+Includes the merged analyst-pilot update. Version identities are aligned to 0.4.1. The existing Core/Full metadata catalog and older published assets are unchanged; compatible installed caches are reused. No new VM baseline or recipient business validation is claimed.
 
 # F&O Data Atlas 0.4.0
 

@@ -1,4 +1,4 @@
-# GitHub install and offline updates — 0.4.0
+# GitHub install and offline updates — 0.4.1
 
 The optional Git-backed npx entrance is described in [first use](first-use.md). It delegates to this same installer/cache. It is separate from skills-add installation, which does not prepare Atlas package-level helpers and metadata.
 
@@ -10,7 +10,7 @@ Use Python 3.10+ and GitHub CLI authenticated for private-repository read access
 
 The query skill checks once per conversation when invoked, offers a newer tools release, and continues locally if unavailable or declined. This is an agent instruction, not a native IDE startup hook. All installed metadata queries stay offline. Tool updates with unchanged metadata IDs/hashes reuse the cache; they do not download the baseline again.
 
-Commands: `check` only reads release metadata; `download` verifies/cache-downloads tools; `install` also starts setup. `--tag v0.3.0` pins a stable tools version. `--destination PATH` selects its download cache. Existing same-version downloads are reverified before reuse. Tool copies are staged/promoted atomically. Profile cache behavior and missing-evidence rules are in [metadata profiles](metadata-profiles.md).
+Commands: `check` only reads release metadata; `download` verifies/cache-downloads tools; `install` also starts setup. `--tag v0.4.1` pins a stable tools version. `--destination PATH` selects its download cache. Existing same-version downloads are reverified before reuse. Tool copies are staged/promoted atomically. Profile cache behavior and missing-evidence rules are in [metadata profiles](metadata-profiles.md).
 
 ## Versions and preservation
 
