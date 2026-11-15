@@ -6,4 +6,6 @@ Source publication is restricted to the plugin-only checkout. Release preparatio
 
 Postpublication evidence is retained in the local delivery manifest; publication must be read back before reporting success. No live database or global host configuration is changed by release verification.
 
+Publication and private-transfer/npx readback subsequently passed; see [the publication record](PUBLICATION.md) for the observed delivery state and validation limits.
+
 Prepublication checks: 67 source tests passed in 5.783 seconds, source-only validation passed with eleven skills, and the metadata catalog remains unchanged. Installer branding and launcher help were reviewed against the requested name/profile/mobile/website. Subsequent archive and publication results are recorded in the local delivery manifest.
