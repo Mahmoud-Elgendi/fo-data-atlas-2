@@ -1,10 +1,14 @@
 # F&O Data Atlas — private AI plugin
 
-Version 0.4.1 includes the reviewed workflow/timesheet templates and pilot guidance. Offline F&O metadata exploration, exported view SQL/dependencies and Fabric query drafting for Codex and Claude Code. No VM, operational database or Atlas app connection is needed for local evidence reads after metadata is installed.
+Version 0.5.0 adds database connection onboarding and eleven analyst skills, including research, diagnosis, SQL review and guided setup. Offline F&O metadata exploration, exported view SQL/dependencies and Fabric query drafting for Codex and Claude Code. No VM, operational database or Atlas app connection is needed for local evidence reads after metadata is installed.
+
+Developed by **Mahmoud Elgendi**. Building D365 F&O, Microsoft Fabric and AI-assisted SQL solutions.
+
+Mobile / WhatsApp: **00966542128150** ([WhatsApp](https://wa.me/966542128150)) | [www.mahmoudelgendi.com](https://www.mahmoudelgendi.com)
 
 ## Install
 
-The optional single-command route and first chat prompts are in [first installation and first use](references/first-use.md). The guide describes the 0.4.1 release workflow. Python-only installation remains available below.
+The optional single-command route and first chat prompts are in [first installation and first use](references/first-use.md). The guide describes the 0.5.0 release workflow. Python-only installation remains available below.
 
 Online bootstrap requires Python 3.10+ and authenticated GitHub CLI with access to Mahmoud-Elgendi/fo-data-atlas-2. Download scripts/github_release.py from that repository or use its copy in this package, then run:
 
@@ -35,6 +39,8 @@ Target-specific PO and receipt examples include SQL/mapping/checks, evidence and
 
 ## References
 
+- [Analyst skills and workflow](references/analyst-workflow.md)
+- [Database connection and discussion flow](references/session-start.md)
 - [Setup](references/setup.md)
 - [GitHub/offline updates](references/github-updates.md)
 - [Core/Full profiles and shared cache](references/metadata-profiles.md)

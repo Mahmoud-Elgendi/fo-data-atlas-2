@@ -47,8 +47,10 @@ class Cancelled(Exception):
 def banner():
     width = 70
     print("\n+" + "=" * width + "+")
-    for line in ("F & O   D A T A   A T L A S", "", "Created by Mahmoud Elgendi",
-                 "Offline D365 F&O knowledge for Fabric SQL"):
+    for line in ("F & O   D A T A   A T L A S", "", "Developed by Mahmoud Elgendi",
+                 "Building D365 F&O, Microsoft Fabric and AI-assisted SQL solutions.",
+                 "Mobile / WhatsApp: 00966542128150",
+                 "Website: www.mahmoudelgendi.com"):
         print("|" + line.center(width) + "|")
     print("+" + "=" * width + "+")
     version = read_json(ROOT / ".codex-plugin" / "plugin.json", {})["version"]
@@ -282,7 +284,8 @@ def main(argv=None):
         if interactive:
             print("\n+----------------------------------------------------------------------+")
             print("  SETUP PREPARED - F&O Data Atlas")
-            print("  Created by Mahmoud Elgendi")
+            print("  Developed by Mahmoud Elgendi")
+            print("  Mobile / WhatsApp: 00966542128150 | www.mahmoudelgendi.com")
             print("+----------------------------------------------------------------------+")
             print("\nInstalled files: " + result["package"])
             print("\nNext steps:")

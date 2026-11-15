@@ -1,0 +1,12 @@
+---
+name: fo-atlas-wizard
+description: Guide Atlas installation, host activation, offline metadata setup, schema export or Microsoft sign-in one step at a time, especially on restricted devices.
+---
+
+1. Determine the user's immediate setup goal and host from existing context. Inspect available tools, existing files and configured cache before suggesting installations. Read [first use](../../references/first-use.md), [setup](../../references/setup.md) and [metadata profiles](../../references/metadata-profiles.md) for the relevant branch.
+2. Give one short step or exact command at a time, then inspect the result. Use full known executable paths when PATH is stale and quote paths appropriately for the user's shell. Reuse compatible installed clients and bundled/local Python. Distinguish the machine you can inspect from a different device the user is operating; do not assume their paths or tools match yours.
+3. For database work follow [session startup](../../references/session-start.md). Let Microsoft handle sign-in; do not collect credentials in chat or files. A missing client is a missing capability, not an invitation to claim success or substitute a Fabric login for SQL access.
+4. On a device without admin rights, offer supported per-user or browser-download/offline methods. Respect organization restrictions on Git/package sources; do not recommend disabling them to force an install. The current Git-backed npx route and skills-add compatibility are distinct; use only an installation route verified for this package. When release tools and metadata were downloaded manually, locate the extracted helper and `references/atlas.sqlite`, then use the documented `--local-pack` option. Verify the matching metadata hash through the installer. Never request bypass of TLS or endpoint security.
+5. Once setup prepares files, follow the actual host activation instructions and verify the skills appear in a new chat. Distinguish files prepared, host activated, offline metadata readable and SQL access verified. A failure at one stage does not erase successful earlier stages.
+
+Record a brief local setup note only when useful: host/version, scope, paths, completed checks and pending steps, without secrets. Finish when the requested stage is observed or the precise blocked prerequisite and safe next step are known. Do not restart the database interview during an installation-only request.

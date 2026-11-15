@@ -18,7 +18,9 @@ function pythonCandidates(env = process.env, platform = process.platform) {
 
 function main(args = process.argv.slice(2), run = spawnSync, out = console) {
   if (args.includes('--help') || args.includes('-h')) {
-    out.log('F&O Data Atlas - Created by Mahmoud Elgendi\n' +
+    out.log('F&O Data Atlas - Developed by Mahmoud Elgendi\n' +
+      'Building D365 F&O, Microsoft Fabric and AI-assisted SQL solutions.\n' +
+      'Mobile / WhatsApp: 00966542128150 | www.mahmoudelgendi.com\n' +
       'fo-data-atlas [install|update|check] [--tag vX.Y.Z] [--destination PATH]\n' +
       'No command opens setup. update opens the same reviewed upgrade wizard.\n' +
       'Requires Python 3.10+, authenticated GitHub CLI and private repository access.\n' +

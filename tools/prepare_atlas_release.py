@@ -17,6 +17,7 @@ def prepare(pack, output, project=ROOT):
     output.mkdir(parents=True)
     version=json.loads((pack/'.codex-plugin/plugin.json').read_text(encoding='utf-8'))['version']
     documentation=project/('docs/plugin-release-'+version)
+    if not documentation.is_dir(): documentation=project/('docs/release-'+version)
     if not documentation.is_dir(): documentation=project/'docs/plugin-release-2026-11-08'
     for path in pack.rglob('*'):
         relative = path.relative_to(pack)
@@ -31,7 +32,7 @@ def prepare(pack, output, project=ROOT):
         target = output/'tools'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tools'/name,target)
-    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py','test_atlas_cli.py','test_atlas_cli.cjs','test_atlas_workflow_templates.py'):
+    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py','test_atlas_cli.py','test_atlas_cli.cjs','test_atlas_workflow_templates.py','test_atlas_connection.py'):
         target=output/'tests'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tests'/name,target)
@@ -46,6 +47,9 @@ def prepare(pack, output, project=ROOT):
 
 Private offline D365 F&O metadata and SQL assistant by Mahmoud Elgendi.
 
+Developed by Mahmoud Elgendi. Building D365 F&O, Microsoft Fabric and AI-assisted SQL solutions.
+Mobile / WhatsApp: 00966542128150. Website: https://www.mahmoudelgendi.com.
+
 This repository contains the small plugin source, tests and release documentation.
 The full offline database is distributed as a versioned GitHub Release asset.
 
@@ -57,6 +61,12 @@ After this version is published, run from your intended Fabric project:
 
 ```powershell
 npx --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#vVERSION" fo-data-atlas
+```
+
+Update using the same reviewed setup wizard:
+
+```powershell
+npx --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#vVERSION" fo-data-atlas update --tag vVERSION
 ```
 
 This is a private Git-backed command, not an npm registry publication or skills-add installation.
