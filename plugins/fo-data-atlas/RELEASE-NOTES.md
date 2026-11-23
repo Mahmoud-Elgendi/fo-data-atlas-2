@@ -1,13 +1,12 @@
-# F&O Data Atlas 0.5.0 — 15 November 2026
+# F&O Data Atlas 0.5.1 — 23 November 2026
 
 Developed by Mahmoud Elgendi. Building D365 F&O, Microsoft Fabric and AI-assisted SQL solutions.
 Mobile / WhatsApp: 00966542128150. Website: https://www.mahmoudelgendi.com.
 
-- Offers a database connection or offline work at the start of project work. Collects the endpoint and database one at a time, verifies access when supported, then offers discussion.
-- Bundles grill-me-with-docs and eight supporting analyst skills: research, diagnosis, SQL review, glossary, handoff, guided setup, Wayfinder and skill discovery. Eleven skills total; no external skill collection is required.
-- Reviews analytical SQL before delivery, reuses agreed requirements and keeps optional workflows optional.
-- Adds a standard-library connection probe for an existing Microsoft sqlcmd (Go). Uses Entra browser sign-in and one fixed read-only database-name check. No credentials are stored, no client is auto-installed and no database writes are authorized by connecting.
-- Updates the installer banner, launcher help, author contact details and README with explicit install/update commands and a restricted-device offline route.
-- Reuses the unchanged v0.3.0 Core/Full metadata catalog and cache; no metadata re-download is needed for a compatible cached profile.
+- Standardizes authored financial dimension aliases: DepartmentValue, SectionValue, SubsectionValue, UnitValue, UnitGroupValue, CostCenterValue and ProjectValue, replacing the Dim prefix by default.
+- Applies the convention through the mandatory SQL rules and the shared financial dimension reference. The alias list does not imply those fields exist in every tenant; target evidence is still required.
+- Alias-only edits preserve joins, physical fields, filters, calculations, order and unrelated names. Original exports remain unchanged. Explicit required legacy names remain supported with a documented mapping.
+- Retains the eleven analyst skills, optional connection/discussion flow, developer branding and offline installation route from 0.5.0.
+- Reuses the unchanged v0.3.0 metadata catalog/assets and verified shared cache. No metadata rebuild or re-download is required for an already cached matching profile.
 
-Source regression, manifest/link validation and archive inventory are checked for this release. Prompt wording and mocked probe checks do not prove native host routing, recipient sign-in, clean-PC readiness or F&O business correctness. No new VM metadata snapshot is claimed. Previously published releases stay unchanged.
+The user's tenant-specific query and attachment are excluded from the distributable package. No query execution, live connection or F&O business reconciliation is implied by this naming change. Earlier releases remain immutable.
