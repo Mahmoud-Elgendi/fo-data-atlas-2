@@ -28,11 +28,11 @@ def prepare(pack, output, project=ROOT):
         target = output / 'plugins' / 'fo-data-atlas' / relative
         target.parent.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(path,target)
-    for name in ('build_atlas_plugin.py','package_atlas_plugin.py','prepare_atlas_release.py','verify_atlas_plugin.py','build_atlas_metadata_packs.py','build_atlas_tools_release.py'):
+    for name in ('build_atlas_plugin.py','package_atlas_plugin.py','prepare_atlas_release.py','verify_atlas_plugin.py','build_atlas_metadata_packs.py','build_atlas_tools_release.py','Install-Atlas.ps1'):
         target = output/'tools'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tools'/name,target)
-    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py','test_atlas_cli.py','test_atlas_cli.cjs','test_atlas_workflow_templates.py','test_atlas_connection.py'):
+    for name in ('test_atlas_plugin.py','test_atlas_github_release.py','test_atlas_sql_lineage.py','test_atlas_metadata_cache.py','test_atlas_cli.py','test_atlas_cli.cjs','test_atlas_workflow_templates.py','test_atlas_connection.py','test_atlas_public_installer.py'):
         target=output/'tests'/name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(project/'tests'/name,target)
@@ -54,6 +54,18 @@ This repository contains the small plugin source, tests and release documentatio
 The full offline database is distributed as a versioned GitHub Release asset.
 
 ## Install
+
+Recommended public route: run tools/Install-Atlas.ps1 in PowerShell from your
+project folder. It uses existing Python 3.10+, public HTTPS release downloads and
+the standard setup wizard, without Node.js, Git or GitHub CLI. Rerun the same
+script to update; matching cached metadata is reused. Host activation remains
+a separate step. It does not change execution policy or install runtimes.
+
+```powershell
+& ./tools/Install-Atlas.ps1
+```
+
+Alternative Git-backed npx route:
 
 Use Node.js 22+, Git, Python 3.10+ and authenticated GitHub CLI with read access.
 One-time authentication: `gh auth login`, then `gh auth setup-git`.

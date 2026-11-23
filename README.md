@@ -1,6 +1,6 @@
 # F&O Data Atlas
 
-Private D365 F&O metadata and Fabric SQL assistant for Codex and Claude Code.
+D365 F&O metadata and Fabric SQL assistant for Codex and Claude Code.
 
 **Developed by Mahmoud Elgendi**
 
@@ -10,9 +10,23 @@ Building D365 F&O, Microsoft Fabric and AI-assisted SQL solutions.
 
 **Website:** [www.mahmoudelgendi.com](https://www.mahmoudelgendi.com)
 
-## Install
+## Install or update with one script (recommended)
 
-Run PowerShell in your intended Fabric project. Requirements: Node.js 22+, Git, Python 3.10+, GitHub CLI and a GitHub account with read access to this private repository.
+Open PowerShell in your Fabric project. The public bootstrap requires an existing Python 3.10+ (including conda/base), but no Node.js, npm, Git, GitHub CLI, GitHub login or administrator installation. Paste the whole block:
+
+```powershell
+$atlasSetup = Join-Path $env:TEMP 'Install-Atlas.ps1'
+Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/Mahmoud-Elgendi/fo-data-atlas-2/main/tools/Install-Atlas.ps1' -OutFile $atlasSetup
+& $atlasSetup
+```
+
+Rerun this same block to update: it resolves the latest published stable release, verifies its tools/helper digests and every packaged file, then opens the normal host/scope/profile wizard. Metadata downloads only when the selected matching profile is uncached. It preserves older versions and project settings. Complete the host activation steps printed after setup.
+
+[Inspect or download the script](tools/Install-Atlas.ps1). Optional parameters: `-Tag v0.5.2`, `-PythonPath 'C:\path\python.exe'`, `-HostTool codex`, `-Scope global`, `-MetadataProfile core`, `-Project 'C:\project'`. `-CheckOnly` downloads/verifies tools without setup or metadata acquisition. The script changes no execution policy; if organization policy blocks scripts or HTTPS downloads, use an IT-approved installation method rather than bypassing it. The original packaged GitHub helper still uses GitHub CLI; this standalone script supplies public transport only during setup. See [verification and limits](docs/public-installer-2026-11-23.md).
+
+## Alternative npx installation
+
+This older route needs Node.js 22+, Git, Python 3.10+ and authenticated GitHub CLI. It remains Git-backed and can fail with EALLOWGIT even though the repository is public.
 
 Authenticate once per device:
 
@@ -27,7 +41,7 @@ Install the reproducible 0.5.2 release:
 npx.cmd --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.2" fo-data-atlas install --tag v0.5.2
 ```
 
-## Update
+## Alternative npx update
 
 ```powershell
 npx.cmd --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.2" fo-data-atlas update --tag v0.5.2
