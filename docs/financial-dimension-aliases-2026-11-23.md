@@ -5,3 +5,5 @@ On 23 November 2026 the owner requested UnitValue rather than DimUnit, and the e
 The supplied query was copied to the main workspace's local test-evidence/financial-dimension-aliases/purchase-order-header.sql with only the seven Dim-prefixed aliases changed. The source attachment remains untouched; tenant-specific SQL was not added to the distributable plugin. Joins, fields, calculations, filters, column order and DefaultLedgerDimension are unchanged. Presence/meaning of the supplied tenant fields is not newly validated by this naming edit.
 
 Checks: exact replacement comparison and source-only package validation. No live database connection, SQL execution, schema validation or F&O business reconciliation is claimed. This source convention change is not a new published plugin release; existing installations keep their installed rules until updated.
+
+Publication follow-up: the source convention was subsequently released as v0.5.1 and integrated on main. See [publication evidence](release-0.5.1/PUBLICATION.md). Installed copies need an update before the new rules apply.
