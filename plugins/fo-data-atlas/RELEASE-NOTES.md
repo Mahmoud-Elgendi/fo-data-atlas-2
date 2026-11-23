@@ -1,12 +1,11 @@
-# F&O Data Atlas 0.5.1 — 23 November 2026
+# F&O Data Atlas 0.5.2 — 23 November 2026
 
 Developed by Mahmoud Elgendi. Building D365 F&O, Microsoft Fabric and AI-assisted SQL solutions.
 Mobile / WhatsApp: 00966542128150. Website: https://www.mahmoudelgendi.com.
 
-- Standardizes authored financial dimension aliases: DepartmentValue, SectionValue, SubsectionValue, UnitValue, UnitGroupValue, CostCenterValue and ProjectValue, replacing the Dim prefix by default.
-- Applies the convention through the mandatory SQL rules and the shared financial dimension reference. The alias list does not imply those fields exist in every tenant; target evidence is still required.
-- Alias-only edits preserve joins, physical fields, filters, calculations, order and unrelated names. Original exports remain unchanged. Explicit required legacy names remain supported with a documented mapping.
-- Retains the eleven analyst skills, optional connection/discussion flow, developer branding and offline installation route from 0.5.0.
-- Reuses the unchanged v0.3.0 metadata catalog/assets and verified shared cache. No metadata rebuild or re-download is required for an already cached matching profile.
+- Makes the existing Fabric Link / Synapse Link active-row rule explicit: qualified `IsDelete IS NULL`, preserving exact casing.
+- Rejects `isdeleted = 0`, `IsDelete = 0`, `IsDelete = FALSE` and `COALESCE(IsDelete, 0) = 0` as substitutes. A missing expected column is a schema gap, not permission to invent a deletion field.
+- Reinforces the rule in SQL review. For a right-side LEFT JOIN, the filter stays in ON or a filtered subquery to preserve unmatched driving rows.
+- Retains financial dimension Value aliases, all eleven skills and the existing installer. Reuses unchanged v0.3.0 metadata assets and cached profiles.
 
-The user's tenant-specific query and attachment are excluded from the distributable package. No query execution, live connection or F&O business reconciliation is implied by this naming change. Earlier releases remain immutable.
+This tools-only documentation/skill patch does not change source exports, generated tenant queries or the SQL linter implementation. Static checks and packaging do not establish live SQL correctness, native host adherence or F&O business reconciliation. Previous releases remain immutable.

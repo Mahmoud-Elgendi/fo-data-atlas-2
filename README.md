@@ -21,16 +21,16 @@ gh auth login
 gh auth setup-git
 ```
 
-Install the reproducible 0.5.1 release:
+Install the reproducible 0.5.2 release:
 
 ```powershell
-npx.cmd --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.1" fo-data-atlas install --tag v0.5.1
+npx.cmd --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.2" fo-data-atlas install --tag v0.5.2
 ```
 
 ## Update
 
 ```powershell
-npx.cmd --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.1" fo-data-atlas update --tag v0.5.1
+npx.cmd --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.2" fo-data-atlas update --tag v0.5.2
 ```
 
 For future updates using the launcher on `main` and the latest published stable tools:
@@ -47,7 +47,7 @@ If `npx.cmd` is missing on Windows, try its known installed path, such as `& 'C:
 
 ## Restricted devices and offline setup
 
-Admin access is not required for Atlas files, but prerequisites may need an approved per-user installation. If npm reports `EALLOWGIT`, this command is blocked on that device. Do not disable organization policy. Use the [release ZIP](https://github.com/Mahmoud-Elgendi/fo-data-atlas-2/releases/tag/v0.5.1) and matching metadata downloaded in the browser. Metadata remains on v0.3.0 because the snapshot has not changed; this is independent of the tools version.
+Admin access is not required for Atlas files, but prerequisites may need an approved per-user installation. If npm reports `EALLOWGIT`, this command is blocked on that device. Do not disable organization policy. Use the [release ZIP](https://github.com/Mahmoud-Elgendi/fo-data-atlas-2/releases/tag/v0.5.2) and matching metadata downloaded in the browser. Metadata remains on v0.3.0 because the snapshot has not changed; this is independent of the tools version.
 
 Extract the tools and Core metadata into short user-owned paths. For example, if tools are in `C:\Users\you\Atlas` and metadata has `C:\Users\you\AtlasMetadata\references\atlas.sqlite`:
 
@@ -72,11 +72,11 @@ There are eleven [bundled skills](plugins/fo-data-atlas/references/analyst-workf
 
 ## Validation and evidence limits
 
-Package/helper tests and archive verification are recorded in [release documentation](docs/release-0.5.1/PLAN.md). Native host routing, a clean recipient device, live SQL authentication and F&O business reconciliation remain separate checks. No new .49 VM baseline or all-IDE compatibility is claimed. Source exports and metadata hashes are preserved.
+Package/helper tests and archive verification are recorded in [release documentation](docs/release-0.5.2/PLAN.md). Native host routing, a clean recipient device, live SQL authentication and F&O business reconciliation remain separate checks. No new .49 VM baseline or all-IDE compatibility is claimed. Source exports and metadata hashes are preserved.
 
 ```powershell
 python -m unittest discover -s tests -v
 python plugins/fo-data-atlas/scripts/validate_package.py --source-only
 ```
 
-See the [plugin guide](plugins/fo-data-atlas/README.md), [release notes](release-notes.md), [actions](docs/release-0.5.1/ACTIONS.md) and [terminal commands](docs/release-0.5.1/TERMINAL.md).
+See the [plugin guide](plugins/fo-data-atlas/README.md), [release notes](release-notes.md), [actions](docs/release-0.5.2/ACTIONS.md) and [terminal commands](docs/release-0.5.2/TERMINAL.md).

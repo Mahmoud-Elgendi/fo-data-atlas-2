@@ -6,6 +6,7 @@ Apply these rules to proposed analytical SQL. Keep extracted source definitions 
 
 - UPPERCASE SQL keywords and functions. Lowercase physical schemas, tables and columns, checking exact target spelling against the Fabric schema CSV.
 - Exception: the column `IsDelete` retains exactly that casing. Use `IsDelete IS NULL` for every Fabric Link / Synapse Link source table that has it. Check presence; never add nonexistent columns.
+- Never substitute `isdeleted = 0`, `IsDelete = 0`, `IsDelete = FALSE` or `COALESCE(IsDelete, 0) = 0` for `IsDelete IS NULL`. The active-row rule is NULL, not a Boolean zero test. If the expected column is absent, report the schema gap instead of inventing a replacement deletion field or predicate.
 - Explicit schema-confirmed exception: dbo.GlobalOptionsetMetadata and its exported OptionSetName, Option, IsUserLocalizedLabel, LocalizedLabelLanguageCode, LocalizedLabel, GlobalOptionSetName, EntityName and ExternalValue retain their exact case. The linter permits these only when present exactly in the target CSV. Further exceptions must be explicit identifier_case_exceptions in project.json and passed with --project; they never permit nonexistent identifiers.
 - If a target deletion column has another casing, pause to resolve the conflict instead of silently skipping deletion filtering or emitting an identifier that does not exist.
 - Keep output aliases in business casing. Prefer suitable exported entity field names. If none fit the meaning, propose a name and identify it as authored. Preserve the alias-to-source mapping.

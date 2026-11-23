@@ -1,6 +1,6 @@
 {
   "name": "fo-data-atlas",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "description": "Private F&O Data Atlas installer by Mahmoud Elgendi",
   "bin": {"fo-data-atlas": "plugins/fo-data-atlas/scripts/atlas-cli.cjs"},

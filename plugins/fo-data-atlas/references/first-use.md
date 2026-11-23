@@ -1,6 +1,6 @@
 # First installation and first use
 
-## Single command (0.5.1)
+## Single command (0.5.2)
 
 This command installs directly from our private GitHub repository, without npm registry publication. Clean-PC transfer and native activation still need recorded acceptance testing. It uses npm's [Git package support](https://docs.npmjs.com/cli/v11/commands/npm-install/) and [executable support](https://docs.npmjs.com/cli/v11/commands/npm-exec/).
 
@@ -9,14 +9,14 @@ On another Windows PC, install your AI tool, Node.js 22+, Git, Python 3.10+ and 
 Open PowerShell in the intended Fabric project:
 
 ```powershell
-npx --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.1" fo-data-atlas
+npx --yes --package="git+https://github.com/Mahmoud-Elgendi/fo-data-atlas-2.git#v0.5.2" fo-data-atlas
 ```
 
 `--yes` accepts npm's temporary launcher download. Atlas still requests download consent and the wizard's final `[Y/n]` confirmation. The launcher has no dependencies, build step or lifecycle hooks. It finds Python 3.10+ and runs the existing helper with the caller's terminal/project directory. Set `FO_ATLAS_PYTHON` to an interpreter executable if discovery fails.
 
 The wizard shows Mahmoud Elgendi's banner, AI tool choice, project/global choice, Core/Full choice and size, then review/confirmation. Core downloads about 304 MiB once; Full about 1.21 GiB. Compatible updates reuse the verified shared cache. Installed helpers continue using Python standard library; Node.js is the optional installer entrance.
 
-The Git tag pins the launcher. The release helper selects latest published stable tools; append `--tag v0.5.1` after `fo-data-atlas` to pin tools too. Metadata remains pinned to its original 0.3.0 assets/hashes. Append `check` for release status or `update` for the reviewed upgrade wizard. npm can cache unchanged Git references; future launcher changes require a new release tag.
+The Git tag pins the launcher. The release helper selects latest published stable tools; append `--tag v0.5.2` after `fo-data-atlas` to pin tools too. Metadata remains pinned to its original 0.3.0 assets/hashes. Append `check` for release status or `update` for the reviewed upgrade wizard. npm can cache unchanged Git references; future launcher changes require a new release tag.
 
 Local source handover: `node plugins/fo-data-atlas/scripts/atlas-cli.cjs --help`. Extracted tools: use `Setup.cmd` or `python scripts/install.py --interactive`, with no Node.js/Git requirement. Offline installation needs matching cached or local metadata as described in [setup](setup.md).
 

@@ -12,6 +12,8 @@ Review two distinct questions:
 
 Run `python PACK/scripts/lint_sql.py <dataset>.sql --schema <csv>` when the project CSV exists, adding relevant company/Link flags from the SQL rules. Without a CSV, identify which target-column checks were not performed and use available live schema evidence if authorized. Static linter success is not SQL compilation or business validation.
 
+Reject `isdeleted = 0` and other zero/false substitutes for Link deletion filtering. The required predicate is exactly qualified `IsDelete IS NULL`, with right-side LEFT JOIN filters in ON or a filtered subquery. Follow the mandatory SQL rule even when another example uses a different deletion convention.
+
 Ensure `<dataset>.checks.sql` covers identity, fanout, missing matches, label/rate duplicates and material calculations as applicable. Execute bounded read-only checks only when the task authorizes live validation and the target is verified. Classify each check as passed, failed or not run; retain exact scope and evidence. If result mismatches need investigation, use [diagnosis](../fo-atlas-diagnose/SKILL.md) for that issue, then return here; avoid recursive reviews of the same unchanged SQL.
 
 Write review findings in the existing mapping document with the affected field/join, consequence and concrete correction. Label delivery **ready for target testing**, **checks passed within the stated scope**, or **blocked by listed findings**. Never infer business reconciliation from successful compilation, and never hide unresolved findings behind an overall passed label. For review-only requests, report findings before changing SQL; if no material findings exist, say so and list validation limits briefly.
